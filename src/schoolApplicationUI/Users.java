@@ -6,9 +6,13 @@
 package schoolApplicationUI;
 
 import java.awt.BorderLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
@@ -34,6 +38,7 @@ public class Users extends JFrame {
     private final JButton b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13;
     private Statement stmt;
     private String query;
+    private Integer count, index;
     private ResultSet rs;
 
     public Users() throws SQLException {
@@ -67,8 +72,70 @@ public class Users extends JFrame {
         field4 = new JTextField();
         field5 = new JTextField();
         fieldPass = new JPasswordField();
-        
+
         field1.setEditable(false);
+        retrieveQuery();
+        b1.setEnabled(false);
+        b2.setEnabled(false);
+        b6.setEnabled(false);
+        b7.setEnabled(false);
+
+        b1.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent me) {
+                if (b1.isEnabled()) {
+                    try {
+                        first();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Users.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
+            }
+
+        });
+        b2.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent me) {
+                if (b2.isEnabled()) {
+                    try {
+                        previous();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Users.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
+            }
+
+        });
+        b3.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent me) {
+                if (b3.isEnabled()) {
+                    try {
+                        next();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Users.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+
+                }
+            }
+
+        });
+        b4.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent me) {
+                if (b4.isEnabled()) {
+                    try {
+                        last();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Users.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
+            }
+
+        });
 
         toolBar.add(b1);
         toolBar.addSeparator();
@@ -97,8 +164,6 @@ public class Users extends JFrame {
         toolBar.add(b13);
 
         panel2.add(labelNum);
-
-        retrieveQuery();
 
         panel.setBorder(BorderFactory.createTitledBorder("Users"));
         GroupLayout layout = new GroupLayout(panel);
@@ -157,32 +222,108 @@ public class Users extends JFrame {
 
         stmt = null;
         query = "SELECT * FROM users";
-        String num1,num2;
+
         try {
             stmt = MainDialog.conn.createStatement();
             rs = stmt.executeQuery(query);
-            rs.last();
-            num2=rs.getString("idusers");
-            rs.first();
 
-            field1.setText(rs.getString("idusers"));
-            field2.setText(rs.getString("login"));
-            field3.setText(rs.getString("password"));
-            field4.setText(rs.getString("email"));
-            field5.setText(rs.getString("lastname"));
-            fieldPass.setText(rs.getString("firstname"));
-            num1=rs.getString("idusers");
-            
-            labelNum.setText(num1+"/"+num2);
+            rs.last();
+
+            count = rs.getInt("idusers");
+
+            first();
 
         } catch (SQLException e) {
 
-        } finally {
-            if (stmt != null) {
-                stmt.close();
-            }
         }
 
+    }
+
+    private void first() throws SQLException {
+
+        rs.first();
+
+        field1.setText(rs.getString("idusers"));
+        field2.setText(rs.getString("login"));
+        field3.setText(rs.getString("password"));
+        field4.setText(rs.getString("email"));
+        field5.setText(rs.getString("lastname"));
+        fieldPass.setText(rs.getString("firstname"));
+        index = rs.getInt("idusers");
+
+        labelNum.setText(index + "/" + count);
+        checkEnabled();
+    }
+
+    private void next() throws SQLException {
+
+        rs.next();
+
+        field1.setText(rs.getString("idusers"));
+        field2.setText(rs.getString("login"));
+        field3.setText(rs.getString("password"));
+        field4.setText(rs.getString("email"));
+        field5.setText(rs.getString("lastname"));
+        fieldPass.setText(rs.getString("firstname"));
+        index = rs.getInt("idusers");
+
+        labelNum.setText(index + "/" + count);
+        checkEnabled();
+    }
+
+    private void previous() throws SQLException {
+
+        rs.previous();
+
+        field1.setText(rs.getString("idusers"));
+        field2.setText(rs.getString("login"));
+        field3.setText(rs.getString("password"));
+        field4.setText(rs.getString("email"));
+        field5.setText(rs.getString("lastname"));
+        fieldPass.setText(rs.getString("firstname"));
+        index = rs.getInt("idusers");
+
+        labelNum.setText(index + "/" + count);
+        checkEnabled();
+    }
+
+    private void last() throws SQLException {
+
+        rs.last();
+
+        field1.setText(rs.getString("idusers"));
+        field2.setText(rs.getString("login"));
+        field3.setText(rs.getString("password"));
+        field4.setText(rs.getString("email"));
+        field5.setText(rs.getString("lastname"));
+        fieldPass.setText(rs.getString("firstname"));
+        index = rs.getInt("idusers");
+
+        labelNum.setText(index + "/" + count);
+        checkEnabled();
+    }
+
+    private void checkEnabled() {
+        b6.setEnabled(false);
+        b7.setEnabled(false);
+        if (index == 1) {
+            b1.setEnabled(false);
+            b2.setEnabled(false);
+            b3.setEnabled(true);
+            b4.setEnabled(true);
+        } else if (index > 1 && index < count) {
+            b1.setEnabled(true);
+            b2.setEnabled(true);
+            b3.setEnabled(true);
+            b4.setEnabled(true);
+
+        } else if (index == count) {
+            b1.setEnabled(true);
+            b2.setEnabled(true);
+            b3.setEnabled(false);
+            b4.setEnabled(false);
+
+        }
     }
 
 }
