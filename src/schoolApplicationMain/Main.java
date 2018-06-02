@@ -5,9 +5,6 @@
  */
 package schoolApplicationMain;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
 import schoolApplicationUI.MainDialog;
 
 /**
@@ -18,19 +15,9 @@ public class Main {
 
     /**
      * @param args the command line arguments
-     * @throws java.sql.SQLException
      */
-   public static void main(String[] args) throws SQLException {
-        Connection conn ;
-        
-        try {
-            conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/schooldb?autoReconnect=true&useSSL=false", "root", "");
-            if (conn != null) {
-                System.out.println("Connected");
-            }
-        } catch (SQLException e) {
-            System.out.println("dewd");
-        }
+   public static void main(String[] args) {
+       
         
         MainDialog frame = new MainDialog();
                 

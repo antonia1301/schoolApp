@@ -5,7 +5,13 @@
  */
 package schoolApplicationUI;
 
-import java.awt.BorderLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -23,8 +29,12 @@ public class MainDialog extends JFrame {
     private final JPanel panel;
     private final JMenuBar menuBar;
     private final ImageIcon image;
-    private JLabel label;
-    
+    private final JLabel label;
+
+    /**
+     *
+     */
+    protected  static Connection conn;
 
     /**
      *
@@ -36,16 +46,14 @@ public class MainDialog extends JFrame {
     //private constructor to avoid client applications to use constructor
     public MainDialog() {
 
-        
-
-        panel= new JPanel();
+        panel = new JPanel();
         menuBar = new JMenuBar();
         image = new ImageIcon("resources/teicrete.jpg");
-        label = new JLabel(image);
-    
+        label = new JLabel();
+        label.setIcon(image);
 
         JMenu peopleMenu = new JMenu("People");
-             
+
         JMenuItem usersAction = new JMenuItem("Users");
         JMenuItem teachersAction = new JMenuItem("Teachers");
         JMenuItem studentsAction = new JMenuItem("Students");
@@ -54,11 +62,46 @@ public class MainDialog extends JFrame {
         JMenuItem assignmentsAction = new JMenuItem("Assignments");
         JMenuItem printAction = new JMenuItem("Print");
         JMenuItem helpAction = new JMenuItem("Help");
+
+        exitAction.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent me) {
+                System.exit(0);
+
+            }
+
+        });
+        usersAction.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent me) {
+                try {
+                    Users users = new Users();
+                } catch (SQLException ex) {
+                    Logger.getLogger(MainDialog.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+
+        });
         
         
+        
+        
+       
+        
+        try {
+            conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/schooldb?autoReconnect=true&useSSL=false", "root", "");
+            if (conn != null) {
+                System.out.println("Connected");
+            }
+        } catch (SQLException e) {
+            System.out.println("Not Connected");
+        }
+
         peopleMenu.add(usersAction);
         peopleMenu.add(teachersAction);
         peopleMenu.add(studentsAction);
+        peopleMenu.addSeparator();
         peopleMenu.add(exitAction);
         menuBar.add(peopleMenu);
         menuBar.add(lessonsAction);
@@ -66,7 +109,7 @@ public class MainDialog extends JFrame {
         menuBar.add(printAction);
         menuBar.add(helpAction);
         panel.add(label);
-         
+
         setJMenuBar(menuBar);
         add(panel);
 
