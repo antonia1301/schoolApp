@@ -434,7 +434,7 @@ public class Users extends JFrame {
         b13.setEnabled(false);
         panel.setBorder(BorderFactory.createTitledBorder("Update this User"));
 
-        idusers = index - 1;
+        idusers = -5;
 
     }
 
