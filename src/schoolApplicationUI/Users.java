@@ -19,6 +19,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -30,16 +31,17 @@ import javax.swing.JToolBar;
  */
 public class Users extends JFrame {
 
-    private final JPanel panel, panel2;
-    private final JToolBar toolBar;
-    private final JLabel label1, label2, label3, label4, label5, label6, labelNum;
-    private final JTextField field1, field2, field3, field4, field5;
-    private final JPasswordField fieldPass;
-    private final JButton b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13;
-    private Statement stmt;
-    private String query;
-    private Integer count, index;
-    private ResultSet rs;
+    protected final JPanel panel;
+    protected final JPanel panel2;
+    protected final JToolBar toolBar;
+    protected final JLabel label1, label2, label3, label4, label5, label6, labelNum;
+    protected final JTextField field1, field2, field3, field4, field5;
+    protected final JPasswordField fieldPass;
+    protected final JButton b1, b2, b3, b4, b5, b6, b7, b8, b9, b10, b11, b12, b13;
+    protected Statement stmt;
+    protected String query, login, password, firstname, lastname, email, idText;
+    protected Integer count, index, idusers, id;
+    protected ResultSet rs;
 
     public Users() throws SQLException {
 
@@ -72,6 +74,8 @@ public class Users extends JFrame {
         field4 = new JTextField();
         field5 = new JTextField();
         fieldPass = new JPasswordField();
+        stmt = MainDialog.conn.createStatement();
+        query = "SELECT * FROM users";
 
         field1.setEditable(false);
         retrieveQuery();
@@ -131,6 +135,74 @@ public class Users extends JFrame {
                     } catch (SQLException ex) {
                         Logger.getLogger(Users.class.getName()).log(Level.SEVERE, null, ex);
                     }
+                }
+
+            }
+
+        });
+        b5.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent me) {
+                if (b5.isEnabled()) {
+                    add();
+                }
+
+            }
+
+        });
+        b6.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent me) {
+                if (b6.isEnabled()) {
+                    try {
+                        disagree();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Users.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
+            }
+
+        });
+        b7.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent me) {
+                if (b7.isEnabled()) {
+                    try {
+                        agree();
+                    } catch (SQLException ex) {
+                        Logger.getLogger(Users.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+                }
+
+            }
+
+        });
+        b8.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent me) {
+                if (b8.isEnabled()) {
+                    modify();
+                }
+
+            }
+
+        });
+        b9.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent me) {
+                if (b9.isEnabled()) {
+                    remove();
+                }
+
+            }
+
+        });
+        b11.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent me) {
+                if (b11.isEnabled()) {
+                    search();
                 }
 
             }
@@ -218,13 +290,10 @@ public class Users extends JFrame {
         setVisible(true);
     }
 
-    private void retrieveQuery() throws SQLException {
-
-        stmt = null;
-        query = "SELECT * FROM users";
+    protected void retrieveQuery() throws SQLException {
 
         try {
-            stmt = MainDialog.conn.createStatement();
+
             rs = stmt.executeQuery(query);
 
             rs.last();
@@ -239,71 +308,264 @@ public class Users extends JFrame {
 
     }
 
-    private void first() throws SQLException {
+    protected void first() throws SQLException {
 
         rs.first();
 
         field1.setText(rs.getString("idusers"));
-        field2.setText(rs.getString("login"));
-        field3.setText(rs.getString("password"));
+        field2.setText(rs.getString("lastname"));
+        field3.setText(rs.getString("firstname"));
         field4.setText(rs.getString("email"));
-        field5.setText(rs.getString("lastname"));
-        fieldPass.setText(rs.getString("firstname"));
+        field5.setText(rs.getString("login"));
+        fieldPass.setText(rs.getString("password"));
         index = rs.getInt("idusers");
 
         labelNum.setText(index + "/" + count);
         checkEnabled();
     }
 
-    private void next() throws SQLException {
+    protected void next() throws SQLException {
 
         rs.next();
 
         field1.setText(rs.getString("idusers"));
-        field2.setText(rs.getString("login"));
-        field3.setText(rs.getString("password"));
+        field2.setText(rs.getString("lastname"));
+        field3.setText(rs.getString("firstname"));
         field4.setText(rs.getString("email"));
-        field5.setText(rs.getString("lastname"));
-        fieldPass.setText(rs.getString("firstname"));
+        field5.setText(rs.getString("login"));
+        fieldPass.setText(rs.getString("password"));
         index = rs.getInt("idusers");
 
         labelNum.setText(index + "/" + count);
         checkEnabled();
     }
 
-    private void previous() throws SQLException {
+    protected void previous() throws SQLException {
 
         rs.previous();
 
         field1.setText(rs.getString("idusers"));
-        field2.setText(rs.getString("login"));
-        field3.setText(rs.getString("password"));
+        field2.setText(rs.getString("lastname"));
+        field3.setText(rs.getString("firstname"));
         field4.setText(rs.getString("email"));
-        field5.setText(rs.getString("lastname"));
-        fieldPass.setText(rs.getString("firstname"));
+        field5.setText(rs.getString("login"));
+        fieldPass.setText(rs.getString("password"));
         index = rs.getInt("idusers");
 
         labelNum.setText(index + "/" + count);
         checkEnabled();
     }
 
-    private void last() throws SQLException {
+    protected void last() throws SQLException {
 
         rs.last();
 
         field1.setText(rs.getString("idusers"));
-        field2.setText(rs.getString("login"));
-        field3.setText(rs.getString("password"));
+        field2.setText(rs.getString("lastname"));
+        field3.setText(rs.getString("firstname"));
         field4.setText(rs.getString("email"));
-        field5.setText(rs.getString("lastname"));
-        fieldPass.setText(rs.getString("firstname"));
+        field5.setText(rs.getString("login"));
+        fieldPass.setText(rs.getString("password"));
         index = rs.getInt("idusers");
 
         labelNum.setText(index + "/" + count);
         checkEnabled();
     }
 
-    private void checkEnabled() {
+    protected void add() {
+        b1.setEnabled(false);
+        b2.setEnabled(false);
+        b3.setEnabled(false);
+        b4.setEnabled(false);
+        b5.setEnabled(false);
+        b6.setEnabled(true);
+        b7.setEnabled(true);
+        b8.setEnabled(false);
+        b9.setEnabled(false);
+        b10.setEnabled(false);
+        b11.setEnabled(false);
+        b12.setEnabled(false);
+        b13.setEnabled(false);
+        field1.setText("");
+        field2.setText("");
+        field3.setText("");
+        field4.setText("");
+        field5.setText("");
+        fieldPass.setText("");
+        panel.setBorder(BorderFactory.createTitledBorder("Add a User"));
+
+        idusers = count + 1;
+
+    }
+
+    protected void remove() {
+        b1.setEnabled(false);
+        b2.setEnabled(false);
+        b3.setEnabled(false);
+        b4.setEnabled(false);
+        b5.setEnabled(false);
+        b6.setEnabled(true);
+        b7.setEnabled(true);
+        b8.setEnabled(false);
+        b9.setEnabled(false);
+        b10.setEnabled(false);
+        b11.setEnabled(false);
+        b12.setEnabled(false);
+        b13.setEnabled(false);
+        panel.setBorder(BorderFactory.createTitledBorder("Remove this User"));
+
+        idusers = 0;
+    }
+
+    protected void modify() {
+
+        b1.setEnabled(false);
+        b2.setEnabled(false);
+        b3.setEnabled(false);
+        b4.setEnabled(false);
+        b5.setEnabled(false);
+        b6.setEnabled(true);
+        b7.setEnabled(true);
+        b8.setEnabled(false);
+        b9.setEnabled(false);
+        b10.setEnabled(false);
+        b11.setEnabled(false);
+        b12.setEnabled(false);
+        b13.setEnabled(false);
+        panel.setBorder(BorderFactory.createTitledBorder("Update this User"));
+
+        idusers = index - 1;
+
+    }
+
+    protected void search() {
+
+        b1.setEnabled(false);
+        b2.setEnabled(false);
+        b3.setEnabled(false);
+        b4.setEnabled(false);
+        b5.setEnabled(false);
+        b6.setEnabled(true);
+        b7.setEnabled(true);
+        b8.setEnabled(false);
+        b9.setEnabled(false);
+        b10.setEnabled(false);
+        b11.setEnabled(false);
+        b12.setEnabled(false);
+        b13.setEnabled(false);
+        field1.setEditable(true);
+        field2.setEditable(false);
+        field3.setEditable(false);
+        field4.setEditable(false);
+        field5.setEditable(false);
+        fieldPass.setEditable(false);
+
+        panel.setBorder(BorderFactory.createTitledBorder("Search a User"));
+
+        idusers = - 1;
+
+    }
+
+    protected void agree() throws SQLException {
+
+        idText = field1.getText();
+        lastname = field2.getText();
+        firstname = field3.getText();
+        email = field4.getText();
+        login = field5.getText();
+        password = String.valueOf(fieldPass.getPassword());
+
+        if (idusers > count) {
+            query = "INSERT INTO users (idusers, login, password, email, lastname, firstname) VALUES (" + idusers + ", '" + login
+                    + "', '" + password + "', '" + email + "', '" + lastname + "', '" + firstname + "');";
+
+            stmt.executeUpdate(query);
+
+            JOptionPane.showMessageDialog(null, "Successful Insertion!");
+
+        } else if (idusers == 0) {
+            query = "DELETE FROM users WHERE idusers = " + index + ";";
+
+            stmt.executeUpdate(query);
+
+            JOptionPane.showMessageDialog(null, "Successful Removal!");
+
+        } else if (idusers == -1) {
+
+            if (Integer.valueOf(idText) > 0 && Integer.valueOf(idText) <= count) {
+                query = "SELECT * FROM users WHERE idusers = " + idText + ";";
+
+                rs = stmt.executeQuery(query);
+                rs.first();
+               
+                String result="Serial: "+idText+ System.lineSeparator()
+                        +"Last Name: "+rs.getString("lastname")+ System.lineSeparator()
+                        +"First Name: "+rs.getString("firstname")+ System.lineSeparator()
+                        +"Email: "+rs.getString("email")+ System.lineSeparator()
+                        +"Login: "+rs.getString("login")+"";
+                
+                JOptionPane.showMessageDialog(null, result);
+            } else {
+                JOptionPane.showMessageDialog(null, "There is not a User with this Serial!");
+            }
+
+        } else {
+            idusers = index;
+            query = "UPDATE users SET  login = '" + login
+                    + "', password = '" + password + "', email = '" + email + "', lastname = '" + lastname + "', firstname = '" + firstname
+                    + "' WHERE idusers = " + idusers + ";";
+
+            stmt.executeUpdate(query);
+
+            JOptionPane.showMessageDialog(null, "Successful Update!");
+
+        }
+
+        b5.setEnabled(true);
+        b6.setEnabled(false);
+        b7.setEnabled(false);
+        b8.setEnabled(true);
+        b9.setEnabled(true);
+        b10.setEnabled(true);
+        b11.setEnabled(true);
+        b12.setEnabled(true);
+        b13.setEnabled(true);
+        field1.setEditable(false);
+        field2.setEditable(true);
+        field3.setEditable(true);
+        field4.setEditable(true);
+        field5.setEditable(true);
+        fieldPass.setEditable(true);
+
+        query = "SELECT * FROM users";
+        retrieveQuery();
+
+    }
+
+    protected void disagree() throws SQLException {
+
+        query = "SELECT * FROM users";
+
+        b5.setEnabled(true);
+        b6.setEnabled(false);
+        b7.setEnabled(false);
+        b8.setEnabled(true);
+        b9.setEnabled(true);
+        b10.setEnabled(true);
+        b11.setEnabled(true);
+        b12.setEnabled(true);
+        b13.setEnabled(true);
+        field1.setEditable(false);
+        field2.setEditable(true);
+        field3.setEditable(true);
+        field4.setEditable(true);
+        field5.setEditable(true);
+        fieldPass.setEditable(true);
+        retrieveQuery();
+
+    }
+
+    protected void checkEnabled() {
         b6.setEnabled(false);
         b7.setEnabled(false);
         if (index == 1) {

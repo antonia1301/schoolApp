@@ -18,6 +18,7 @@ import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 /**
@@ -30,11 +31,13 @@ public class MainDialog extends JFrame {
     private final JMenuBar menuBar;
     private final ImageIcon image;
     private final JLabel label;
-
+    private JMenu peopleMenu, lessonsMenu, assignmentsMenu,printMenu,helpMenu;
+    private JMenuItem usersAction, teachersAction, studentsAction, exitAction, lessonsAction, prerequisitesAction,
+            teachingAction, enrollmentAction;
     /**
      *
      */
-    protected  static Connection conn;
+    protected static Connection conn;
 
     /**
      *
@@ -52,16 +55,21 @@ public class MainDialog extends JFrame {
         label = new JLabel();
         label.setIcon(image);
 
-        JMenu peopleMenu = new JMenu("People");
+        peopleMenu = new JMenu("People");
+        lessonsMenu = new JMenu("Lessons");
+        assignmentsMenu = new JMenu("Assignments");
+        printMenu = new JMenu("Print");
+        helpMenu = new JMenu("Help");
 
-        JMenuItem usersAction = new JMenuItem("Users");
-        JMenuItem teachersAction = new JMenuItem("Teachers");
-        JMenuItem studentsAction = new JMenuItem("Students");
-        JMenuItem exitAction = new JMenuItem("Exit");
-        JMenuItem lessonsAction = new JMenuItem("Lessons");
-        JMenuItem assignmentsAction = new JMenuItem("Assignments");
-        JMenuItem printAction = new JMenuItem("Print");
-        JMenuItem helpAction = new JMenuItem("Help");
+        usersAction = new JMenuItem("Users");
+        teachersAction = new JMenuItem("Teachers");
+        studentsAction = new JMenuItem("Students");
+        exitAction = new JMenuItem("Exit");
+        lessonsAction = new JMenuItem("Lessons");
+        prerequisitesAction = new JMenuItem("Prerequisites");
+        teachingAction = new JMenuItem("Teaching");
+        enrollmentAction = new JMenuItem("Enrollment");
+       
 
         exitAction.addMouseListener(new MouseAdapter() {
             @Override
@@ -83,12 +91,36 @@ public class MainDialog extends JFrame {
             }
 
         });
-        
-        
-        
-        
-       
-        
+        teachersAction.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent me) {
+                try {
+                    Teachers teachers = new Teachers();
+                } catch (SQLException ex) {
+                    Logger.getLogger(MainDialog.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+
+        });
+        printMenu.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent me) {
+
+                JOptionPane.showMessageDialog(null, "Print Completed!");
+
+            }
+
+        });
+        helpMenu.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent me) {
+
+                JOptionPane.showMessageDialog(null, "For help visit our site");
+            }
+
+        });
+
         try {
             conn = (Connection) DriverManager.getConnection("jdbc:mysql://localhost:3306/schooldb?autoReconnect=true&useSSL=false", "root", "");
             if (conn != null) {
@@ -103,11 +135,15 @@ public class MainDialog extends JFrame {
         peopleMenu.add(studentsAction);
         peopleMenu.addSeparator();
         peopleMenu.add(exitAction);
+        lessonsMenu.add(lessonsAction);
+        lessonsMenu.add(prerequisitesAction);
+        assignmentsMenu.add(teachingAction);
+        assignmentsMenu.add(enrollmentAction);
         menuBar.add(peopleMenu);
-        menuBar.add(lessonsAction);
-        menuBar.add(assignmentsAction);
-        menuBar.add(printAction);
-        menuBar.add(helpAction);
+        menuBar.add(lessonsMenu);
+        menuBar.add(assignmentsMenu);
+        menuBar.add(printMenu);
+        menuBar.add(helpMenu);
         panel.add(label);
 
         setJMenuBar(menuBar);
