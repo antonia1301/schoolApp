@@ -42,6 +42,7 @@ public class Users extends JFrame {
     protected String query, login, password, firstname, lastname, email, idText;
     protected Integer count, index, idusers, id;
     protected ResultSet rs;
+    protected GroupLayout layout;
 
     public Users() throws SQLException {
 
@@ -238,7 +239,7 @@ public class Users extends JFrame {
         panel2.add(labelNum);
 
         panel.setBorder(BorderFactory.createTitledBorder("Users"));
-        GroupLayout layout = new GroupLayout(panel);
+        layout = new GroupLayout(panel);
         panel.setLayout(layout);
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
@@ -453,6 +454,12 @@ public class Users extends JFrame {
         b11.setEnabled(false);
         b12.setEnabled(false);
         b13.setEnabled(false);
+        field1.setText("");
+        field2.setText("");
+        field3.setText("");
+        field4.setText("");
+        field5.setText("");
+        fieldPass.setText("");
         field1.setEditable(true);
         field2.setEditable(false);
         field3.setEditable(false);
@@ -497,13 +504,13 @@ public class Users extends JFrame {
 
                 rs = stmt.executeQuery(query);
                 rs.first();
-               
-                String result="Serial: "+idText+ System.lineSeparator()
-                        +"Last Name: "+rs.getString("lastname")+ System.lineSeparator()
-                        +"First Name: "+rs.getString("firstname")+ System.lineSeparator()
-                        +"Email: "+rs.getString("email")+ System.lineSeparator()
-                        +"Login: "+rs.getString("login")+"";
-                
+
+                String result = "Serial: " + idText + System.lineSeparator()
+                        + "Last Name: " + rs.getString("lastname") + System.lineSeparator()
+                        + "First Name: " + rs.getString("firstname") + System.lineSeparator()
+                        + "Email: " + rs.getString("email") + System.lineSeparator()
+                        + "Login: " + rs.getString("login") + "";
+
                 JOptionPane.showMessageDialog(null, result);
             } else {
                 JOptionPane.showMessageDialog(null, "There is not a User with this Serial!");
@@ -568,7 +575,13 @@ public class Users extends JFrame {
     protected void checkEnabled() {
         b6.setEnabled(false);
         b7.setEnabled(false);
-        if (index == 1) {
+        if (index == 0 || index == 1 && count == 1) {
+            b1.setEnabled(false);
+            b2.setEnabled(false);
+            b3.setEnabled(false);
+            b4.setEnabled(false);
+
+        } else if (index == 1) {
             b1.setEnabled(false);
             b2.setEnabled(false);
             b3.setEnabled(true);
@@ -579,13 +592,14 @@ public class Users extends JFrame {
             b3.setEnabled(true);
             b4.setEnabled(true);
 
-        } else if (index == count) {
+        } else if (index == count && index != 0) {
             b1.setEnabled(true);
             b2.setEnabled(true);
             b3.setEnabled(false);
             b4.setEnabled(false);
 
         }
+
     }
 
 }

@@ -19,24 +19,25 @@ import javax.swing.JOptionPane;
  *
  * @author Flora
  */
-public class Teachers extends Users {
+public class Students extends Users {
 
-    private String tilefono, eidikotita, endiaferonta;
+    private String am, eksamino;
     private final JComboBox<String> comboBox;
     private java.util.List<Integer> list;
 
-    public Teachers() throws SQLException {
+    public Students() throws SQLException {
 
-        panel.setBorder(BorderFactory.createTitledBorder("Teachers"));
+        panel.setBorder(BorderFactory.createTitledBorder("Students"));
         label2.setText("User:");
-        label3.setText("Specialization:");
-        label4.setText("Interests:");
-        label5.setText("Phone:");
+        label3.setText("AM:");
+        label4.setText("Semester:");
         comboBox = new JComboBox<>();
+        panel.remove(label5);
+        panel.remove(field5);
         panel.remove(label6);
         panel.remove(fieldPass);
 
-        query = "SELECT * FROM users left JOIN teacher ON users.idusers = teacher.idteacher WHERE teacher.idteacher IS NOT NULL;";
+        query = "SELECT * FROM users left JOIN student ON users.idusers = student.idstudent WHERE student.idstudent IS NOT NULL;";
         retrieveQuery();
 
     }
@@ -47,8 +48,19 @@ public class Teachers extends Users {
         try {
 
             rs = stmt.executeQuery(query);
+            if (rs.isBeforeFirst()) {
+                first();
+            } else {
+                index = 0;
+                count = 0;
+                labelNum.setText(index + "/" + count);
+                checkEnabled();
+                field1.setText("");
+                field2.setText("");
+                field3.setText("");
+                field4.setText("");
 
-            first();
+            }
 
         } catch (SQLException e) {
 
@@ -63,9 +75,8 @@ public class Teachers extends Users {
 
         field1.setText(rs.getString("idusers"));
         field2.setText(rs.getString("lastname") + ", " + rs.getString("firstname"));
-        field3.setText(rs.getString("eidikotita"));
-        field4.setText(rs.getString("endiaferonta"));
-        field5.setText(rs.getString("tilefono"));
+        field3.setText(rs.getString("AM"));
+        field4.setText(rs.getString("examino"));
         index = 1;
 
         count = 1;
@@ -87,9 +98,8 @@ public class Teachers extends Users {
 
         field1.setText(rs.getString("idusers"));
         field2.setText(rs.getString("lastname") + ", " + rs.getString("firstname"));
-        field3.setText(rs.getString("eidikotita"));
-        field4.setText(rs.getString("endiaferonta"));
-        field5.setText(rs.getString("tilefono"));
+        field3.setText(rs.getString("AM"));
+        field4.setText(rs.getString("examino"));
         index = index + 1;
 
         labelNum.setText(index + "/" + count);
@@ -103,9 +113,8 @@ public class Teachers extends Users {
 
         field1.setText(rs.getString("idusers"));
         field2.setText(rs.getString("lastname") + ", " + rs.getString("firstname"));
-        field3.setText(rs.getString("eidikotita"));
-        field4.setText(rs.getString("endiaferonta"));
-        field5.setText(rs.getString("tilefono"));
+        field3.setText(rs.getString("AM"));
+        field4.setText(rs.getString("examino"));
 
         index = index - 1;
         labelNum.setText(index + "/" + count);
@@ -119,9 +128,8 @@ public class Teachers extends Users {
 
         field1.setText(rs.getString("idusers"));
         field2.setText(rs.getString("lastname") + ", " + rs.getString("firstname"));
-        field3.setText(rs.getString("eidikotita"));
-        field4.setText(rs.getString("endiaferonta"));
-        field5.setText(rs.getString("tilefono"));
+        field3.setText(rs.getString("AM"));
+        field4.setText(rs.getString("examino"));
         index = count;
 
         labelNum.setText(index + "/" + count);
@@ -143,11 +151,10 @@ public class Teachers extends Users {
         b11.setEnabled(false);
         b12.setEnabled(false);
         b13.setEnabled(false);
-        field3.setText("");
-        field4.setText("");
-        field5.setText("");
+        field3.setText("0");
+        field4.setText("0");
         changeLayout(0);
-        panel.setBorder(BorderFactory.createTitledBorder("Add a Teacher"));
+        panel.setBorder(BorderFactory.createTitledBorder("Add a Student"));
 
         query = "SELECT * FROM users left join student on idusers=idstudent WHERE idstudent is NULL and idusers NOT IN (SELECT idteacher from teacher);";
         try {
@@ -199,14 +206,10 @@ public class Teachers extends Users {
         b11.setEnabled(false);
         b12.setEnabled(false);
         b13.setEnabled(false);
-        panel.setBorder(BorderFactory.createTitledBorder("Remove this Teacher"));
+        panel.setBorder(BorderFactory.createTitledBorder("Remove this Student"));
 
         idusers = 0;
 
-        int a = Integer.valueOf(field1.getText());
-        if (a == 1 || a == 2 || a == 3) {
-            b7.setEnabled(false);
-        }
     }
 
     @Override
@@ -227,7 +230,7 @@ public class Teachers extends Users {
         b13.setEnabled(false);
         field1.setEditable(false);
         field2.setEditable(false);
-        panel.setBorder(BorderFactory.createTitledBorder("Update this Teacher"));
+        panel.setBorder(BorderFactory.createTitledBorder("Update this Student"));
 
         idusers = -5;
 
@@ -253,14 +256,12 @@ public class Teachers extends Users {
         field2.setText("");
         field3.setText("");
         field4.setText("");
-        field5.setText("");
         field1.setEditable(true);
         field2.setEditable(false);
         field3.setEditable(false);
         field4.setEditable(false);
-        field5.setEditable(false);
 
-        panel.setBorder(BorderFactory.createTitledBorder("Search a Teacher"));
+        panel.setBorder(BorderFactory.createTitledBorder("Search a Student"));
 
         idusers = - 1;
 
@@ -270,13 +271,13 @@ public class Teachers extends Users {
     protected void agree() throws SQLException {
 
         idText = field1.getText();
-        eidikotita = field3.getText();
-        endiaferonta = field4.getText();
-        tilefono = field5.getText();
+        am = field3.getText();
+        eksamino = field4.getText();
 
         if (idusers > count) {
-            query = "INSERT INTO teacher (idteacher, eidikotita, endiaferonta, tilefono) VALUES (" + idText + ", '" + eidikotita
-                    + "', '" + endiaferonta + "', '" + tilefono + "') ;";
+
+            query = "INSERT INTO student (idstudent, AM, examino) VALUES (" + idText + ", '" + am
+                    + "', " + eksamino + ");";
 
             stmt.executeUpdate(query);
 
@@ -285,21 +286,23 @@ public class Teachers extends Users {
 
         } else if (idusers == 0) {
 
-            query = "DELETE FROM teacher WHERE  idteacher = " + idText + ";";
+            query = "DELETE FROM student WHERE  idstudent = " + idText + ";";
 
             stmt.executeUpdate(query);
             JOptionPane.showMessageDialog(null, "Successful Removal!");
 
         } else if (idusers == -1) {
-            list = new ArrayList<>();
 
-            query = "select idteacher from teacher;";
+            list = new ArrayList<>();
+              
+            query = "select idstudent from student;";
             rs = stmt.executeQuery(query);
             while (rs.next()) {
-                list.add(rs.getInt("idteacher"));
+                list.add(rs.getInt("idstudent"));
             }
-            if (list.contains(Integer.valueOf(idText))) {
-                query = "SELECT * FROM teacher left JOIN users ON users.idusers = teacher.idteacher WHERE idteacher = " + idText + ";";
+
+            if (list.contains(Integer.valueOf(idText)) ) {
+                query = "SELECT * FROM student left JOIN users ON users.idusers = student.idstudent WHERE idstudent = " + idText + ";";
 
                 rs = stmt.executeQuery(query);
                 rs.first();
@@ -307,9 +310,8 @@ public class Teachers extends Users {
                 String result = "Serial: " + idText + System.lineSeparator()
                         + "Last Name: " + rs.getString("lastname") + System.lineSeparator()
                         + "First Name: " + rs.getString("firstname") + System.lineSeparator()
-                        + "Specialization: " + rs.getString("eidikotita") + System.lineSeparator()
-                        + "Interests: " + rs.getString("endiaferonta") + System.lineSeparator()
-                        + "Phone: " + rs.getString("tilefono") + "";
+                        + "AM: " + rs.getString("AM") + System.lineSeparator()
+                        + "Semester: " + rs.getInt("examino") + "";
 
                 JOptionPane.showMessageDialog(null, result);
             } else {
@@ -319,8 +321,7 @@ public class Teachers extends Users {
         } else {
 
             idusers = index;
-            query = "UPDATE teacher left JOIN users  ON users.idusers = teacher.idteacher SET eidikotita = '" + eidikotita + "',endiaferonta = '" + endiaferonta
-                    + "', tilefono = '" + tilefono + "' WHERE idteacher = " + idText + ";";
+            query = "UPDATE student left JOIN users  ON users.idusers = student.idstudent SET AM = '" + am + "', examino = " + eksamino + " WHERE idstudent = " + idText + ";";
             stmt.executeUpdate(query);
 
             JOptionPane.showMessageDialog(null, "Successful Update!");
@@ -340,10 +341,7 @@ public class Teachers extends Users {
         field2.setEditable(true);
         field3.setEditable(true);
         field4.setEditable(true);
-        field5.setEditable(true);
-        fieldPass.setEditable(true);
-
-        query = "SELECT * FROM users left JOIN teacher ON users.idusers = teacher.idteacher WHERE teacher.idteacher IS NOT NULL;";
+        query = "SELECT * FROM users left JOIN student ON users.idusers = student.idstudent WHERE student.idstudent IS NOT NULL;";
         retrieveQuery();
 
     }
@@ -351,7 +349,7 @@ public class Teachers extends Users {
     @Override
     protected void disagree() throws SQLException {
 
-        query = "SELECT * FROM users left JOIN teacher ON users.idusers = teacher.idteacher WHERE teacher.idteacher IS NOT NULL;";
+        query = "SELECT * FROM users left JOIN student ON users.idusers = student.idstudent WHERE student.idstudent IS NOT NULL;";
 
         b5.setEnabled(true);
         b6.setEnabled(false);
@@ -385,13 +383,13 @@ public class Teachers extends Users {
                             .addComponent(label2)
                             .addComponent(label3)
                             .addComponent(label4)
-                            .addComponent(label5))
+                    )
                     .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                             .addComponent(field1)
                             .addComponent(comboBox)
                             .addComponent(field3)
                             .addComponent(field4)
-                            .addComponent(field5))
+                    )
             );
             layout.setVerticalGroup(layout.createSequentialGroup()
                     .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -406,9 +404,6 @@ public class Teachers extends Users {
                     .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                             .addComponent(label4)
                             .addComponent(field4))
-                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                            .addComponent(label5)
-                            .addComponent(field5))
             );
         } else if (a == 1) {
             panel.remove(comboBox);
@@ -420,14 +415,12 @@ public class Teachers extends Users {
                             .addComponent(label2)
                             .addComponent(label3)
                             .addComponent(label4)
-                            .addComponent(label5)
                     )
                     .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                             .addComponent(field1)
                             .addComponent(field2)
                             .addComponent(field3)
                             .addComponent(field4)
-                            .addComponent(field5)
                     )
             );
             layout.setVerticalGroup(layout.createSequentialGroup()
@@ -443,9 +436,6 @@ public class Teachers extends Users {
                     .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                             .addComponent(label4)
                             .addComponent(field4))
-                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                            .addComponent(label5)
-                            .addComponent(field5))
             );
         }
     }
