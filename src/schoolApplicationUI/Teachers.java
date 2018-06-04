@@ -23,7 +23,7 @@ public class Teachers extends Users {
 
     private String tilefono, eidikotita, endiaferonta;
     private final JComboBox<String> comboBox;
-    private java.util.List<Integer> list;
+    
 
     public Teachers() throws SQLException {
 
@@ -108,6 +108,7 @@ public class Teachers extends Users {
         field5.setText(rs.getString("tilefono"));
 
         index = index - 1;
+        
         labelNum.setText(index + "/" + count);
         checkEnabled();
     }
@@ -139,10 +140,7 @@ public class Teachers extends Users {
         b7.setEnabled(true);
         b8.setEnabled(false);
         b9.setEnabled(false);
-        b10.setEnabled(false);
         b11.setEnabled(false);
-        b12.setEnabled(false);
-        b13.setEnabled(false);
         field3.setText("");
         field4.setText("");
         field5.setText("");
@@ -195,10 +193,7 @@ public class Teachers extends Users {
         b7.setEnabled(true);
         b8.setEnabled(false);
         b9.setEnabled(false);
-        b10.setEnabled(false);
         b11.setEnabled(false);
-        b12.setEnabled(false);
-        b13.setEnabled(false);
         panel.setBorder(BorderFactory.createTitledBorder("Remove this Teacher"));
 
         idusers = 0;
@@ -221,10 +216,7 @@ public class Teachers extends Users {
         b7.setEnabled(true);
         b8.setEnabled(false);
         b9.setEnabled(false);
-        b10.setEnabled(false);
         b11.setEnabled(false);
-        b12.setEnabled(false);
-        b13.setEnabled(false);
         field1.setEditable(false);
         field2.setEditable(false);
         panel.setBorder(BorderFactory.createTitledBorder("Update this Teacher"));
@@ -245,10 +237,7 @@ public class Teachers extends Users {
         b7.setEnabled(true);
         b8.setEnabled(false);
         b9.setEnabled(false);
-        b10.setEnabled(false);
         b11.setEnabled(false);
-        b12.setEnabled(false);
-        b13.setEnabled(false);
         field1.setText("");
         field2.setText("");
         field3.setText("");
@@ -332,10 +321,7 @@ public class Teachers extends Users {
         b7.setEnabled(false);
         b8.setEnabled(true);
         b9.setEnabled(true);
-        b10.setEnabled(true);
         b11.setEnabled(true);
-        b12.setEnabled(true);
-        b13.setEnabled(true);
         field1.setEditable(false);
         field2.setEditable(true);
         field3.setEditable(true);
@@ -358,10 +344,7 @@ public class Teachers extends Users {
         b7.setEnabled(false);
         b8.setEnabled(true);
         b9.setEnabled(true);
-        b10.setEnabled(true);
         b11.setEnabled(true);
-        b12.setEnabled(true);
-        b13.setEnabled(true);
         field1.setEditable(false);
         field2.setEditable(true);
         field3.setEditable(true);

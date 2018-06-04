@@ -23,7 +23,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 
@@ -31,24 +30,22 @@ import javax.swing.JToolBar;
  *
  * @author Flora
  */
-public class Users extends JFrame {
+public class Lessons extends JFrame {
 
     protected final JPanel panel;
     protected final JPanel panel2;
     protected final JToolBar toolBar;
-    protected final JLabel label1, label2, label3, label4, label5, label6, labelNum;
-    protected final JTextField field1, field2, field3, field4, field5;
-    protected final JPasswordField fieldPass;
+    protected final JLabel label1, label2, label3, labelNum;
+    protected final JTextField field1, field2, field3;
     protected final JButton b1, b2, b3, b4, b5, b6, b7, b8, b9, b11;
     protected Statement stmt;
-    protected String query, login, password, firstname, lastname, email, idText;
-    protected Integer count, index, idusers, id;
+    protected String query, name, description, idText;
+    protected Integer count, index, idlessons;
     protected ResultSet rs;
     protected GroupLayout layout;
-    protected java.util.List<Integer> list;
+    private java.util.List<Integer> list;
 
-    public Users() throws SQLException {
-
+    public Lessons() throws SQLException {
         toolBar = new JToolBar(JToolBar.HORIZONTAL);
         panel = new JPanel();
         panel2 = new JPanel();
@@ -62,21 +59,15 @@ public class Users extends JFrame {
         b8 = new JButton(new ImageIcon("resources/modify16.png"));
         b9 = new JButton(new ImageIcon("resources/delete16.png"));
         b11 = new JButton(new ImageIcon("resources/search16.png"));
-        label1 = new JLabel("Serial:");
-        label2 = new JLabel("Last Name:");
-        label3 = new JLabel("First Name:");
-        label4 = new JLabel("Email");
-        label5 = new JLabel("Login");
-        label6 = new JLabel("Password");
+        label1 = new JLabel("Lesson ID:");
+        label2 = new JLabel("Lesson Name:");
+        label3 = new JLabel("Lesson Description:");
         labelNum = new JLabel();
         field1 = new JTextField();
         field2 = new JTextField();
         field3 = new JTextField();
-        field4 = new JTextField();
-        field5 = new JTextField();
-        fieldPass = new JPasswordField();
         stmt = MainDialog.conn.createStatement();
-        query = "SELECT * FROM users";
+        query = "SELECT * FROM lesson";
 
         field1.setEditable(false);
         retrieveQuery();
@@ -241,17 +232,11 @@ public class Users extends JFrame {
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                         .addComponent(label1)
                         .addComponent(label2)
-                        .addComponent(label3)
-                        .addComponent(label4)
-                        .addComponent(label5)
-                        .addComponent(label6))
+                        .addComponent(label3))
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addComponent(field1)
                         .addComponent(field2)
-                        .addComponent(field3)
-                        .addComponent(field4)
-                        .addComponent(field5)
-                        .addComponent(fieldPass))
+                        .addComponent(field3))
         );
         layout.setVerticalGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -263,15 +248,6 @@ public class Users extends JFrame {
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                         .addComponent(label3)
                         .addComponent(field3))
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(label4)
-                        .addComponent(field4))
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(label5)
-                        .addComponent(field5))
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(label6)
-                        .addComponent(fieldPass))
         );
 
         setLayout(new BorderLayout());
@@ -303,12 +279,9 @@ public class Users extends JFrame {
 
         rs.first();
 
-        field1.setText(rs.getString("idusers"));
-        field2.setText(rs.getString("lastname"));
-        field3.setText(rs.getString("firstname"));
-        field4.setText(rs.getString("email"));
-        field5.setText(rs.getString("login"));
-        fieldPass.setText(rs.getString("password"));
+        field1.setText(rs.getString("idlesson"));
+        field2.setText(rs.getString("name"));
+        field3.setText(rs.getString("description"));
         index = 1;
 
         count = 1;
@@ -327,12 +300,9 @@ public class Users extends JFrame {
 
         rs.next();
 
-        field1.setText(rs.getString("idusers"));
-        field2.setText(rs.getString("lastname"));
-        field3.setText(rs.getString("firstname"));
-        field4.setText(rs.getString("email"));
-        field5.setText(rs.getString("login"));
-        fieldPass.setText(rs.getString("password"));
+        field1.setText(rs.getString("idlesson"));
+        field2.setText(rs.getString("name"));
+        field3.setText(rs.getString("description"));
         index = index + 1;
 
         labelNum.setText(index + "/" + count);
@@ -343,12 +313,9 @@ public class Users extends JFrame {
 
         rs.previous();
 
-        field1.setText(rs.getString("idusers"));
-        field2.setText(rs.getString("lastname"));
-        field3.setText(rs.getString("firstname"));
-        field4.setText(rs.getString("email"));
-        field5.setText(rs.getString("login"));
-        fieldPass.setText(rs.getString("password"));
+        field1.setText(rs.getString("idlesson"));
+        field2.setText(rs.getString("name"));
+        field3.setText(rs.getString("description"));
         index = index - 1;
 
         labelNum.setText(index + "/" + count);
@@ -359,12 +326,9 @@ public class Users extends JFrame {
 
         rs.last();
 
-        field1.setText(rs.getString("idusers"));
-        field2.setText(rs.getString("lastname"));
-        field3.setText(rs.getString("firstname"));
-        field4.setText(rs.getString("email"));
-        field5.setText(rs.getString("login"));
-        fieldPass.setText(rs.getString("password"));
+        field1.setText(rs.getString("idlesson"));
+        field2.setText(rs.getString("name"));
+        field3.setText(rs.getString("description"));
         index = count;
 
         labelNum.setText(index + "/" + count);
@@ -385,12 +349,9 @@ public class Users extends JFrame {
         field1.setText("");
         field2.setText("");
         field3.setText("");
-        field4.setText("");
-        field5.setText("");
-        fieldPass.setText("");
-        panel.setBorder(BorderFactory.createTitledBorder("Add a User"));
+        panel.setBorder(BorderFactory.createTitledBorder("Add a Lesson"));
 
-        idusers = count + 1;
+        idlessons = count + 1;
 
     }
 
@@ -405,9 +366,9 @@ public class Users extends JFrame {
         b8.setEnabled(false);
         b9.setEnabled(false);
         b11.setEnabled(false);
-        panel.setBorder(BorderFactory.createTitledBorder("Remove this User"));
+        panel.setBorder(BorderFactory.createTitledBorder("Remove this Lesson"));
 
-        idusers = 0;
+        idlessons = 0;
     }
 
     protected void modify() {
@@ -422,9 +383,9 @@ public class Users extends JFrame {
         b8.setEnabled(false);
         b9.setEnabled(false);
         b11.setEnabled(false);
-        panel.setBorder(BorderFactory.createTitledBorder("Update this User"));
+        panel.setBorder(BorderFactory.createTitledBorder("Update this Lesson"));
 
-        idusers = -5;
+        idlessons = -5;
 
     }
 
@@ -443,65 +404,54 @@ public class Users extends JFrame {
         field1.setText("");
         field2.setText("");
         field3.setText("");
-        field4.setText("");
-        field5.setText("");
-        fieldPass.setText("");
         field1.setEditable(true);
         field2.setEditable(false);
         field3.setEditable(false);
-        field4.setEditable(false);
-        field5.setEditable(false);
-        fieldPass.setEditable(false);
 
-        panel.setBorder(BorderFactory.createTitledBorder("Search a User"));
+        panel.setBorder(BorderFactory.createTitledBorder("Search a Lesson"));
 
-        idusers = - 1;
+        idlessons = - 1;
 
     }
 
     protected void agree() throws SQLException {
 
         idText = field1.getText();
-        lastname = field2.getText();
-        firstname = field3.getText();
-        email = field4.getText();
-        login = field5.getText();
-        password = String.valueOf(fieldPass.getPassword());
+        name = field2.getText();
+        description = field3.getText();
 
-        if (idusers > count) {
-            query = "INSERT INTO users (idusers, login, password, email, lastname, firstname) VALUES (" + idusers + ", '" + login
-                    + "', '" + password + "', '" + email + "', '" + lastname + "', '" + firstname + "');";
+        if (idlessons > count) {
+            query = "INSERT INTO lesson (idlesson, name, description) VALUES (" + idlessons + ", '" + name
+                    + "', '" + description + "');";
 
             stmt.executeUpdate(query);
 
             JOptionPane.showMessageDialog(null, "Successful Insertion!");
 
-        } else if (idusers == 0) {
-            query = "DELETE FROM users WHERE idusers = " + idText + ";";
+        } else if (idlessons == 0) {
+            query = "DELETE FROM lesson WHERE idlesson = " + idText + ";";
 
             stmt.executeUpdate(query);
 
             JOptionPane.showMessageDialog(null, "Successful Removal!");
 
-        } else if (idusers == -1) {
+        } else if (idlessons == -1) {
             list = new ArrayList<>();
 
-            query = "select idusers from users;";
+            query = "select idlesson from lesson;";
             rs = stmt.executeQuery(query);
             while (rs.next()) {
-                list.add(rs.getInt("idusers"));
+                list.add(rs.getInt("idlesson"));
             }
             if (list.contains(Integer.valueOf(idText))) {
-                query = "SELECT * FROM users WHERE idusers = " + idText + ";";
+                query = "SELECT * FROM lesson WHERE idlesson = " + idText + ";";
 
                 rs = stmt.executeQuery(query);
                 rs.first();
 
-                String result = "Serial: " + idText + System.lineSeparator()
-                        + "Last Name: " + rs.getString("lastname") + System.lineSeparator()
-                        + "First Name: " + rs.getString("firstname") + System.lineSeparator()
-                        + "Email: " + rs.getString("email") + System.lineSeparator()
-                        + "Login: " + rs.getString("login") + "";
+                String result = "Lesson ID: " + idText + System.lineSeparator()
+                        + "Lesson Name: " + rs.getString("name") + System.lineSeparator()
+                        + "Lesson Description: " + rs.getString("description") + "";
 
                 JOptionPane.showMessageDialog(null, result);
             } else {
@@ -509,10 +459,10 @@ public class Users extends JFrame {
             }
 
         } else {
-            idusers = index;
-            query = "UPDATE users SET  login = '" + login
-                    + "', password = '" + password + "', email = '" + email + "', lastname = '" + lastname + "', firstname = '" + firstname
-                    + "' WHERE idusers = " + idusers + ";";
+            idlessons = index;
+            query = "UPDATE lesson SET  name = '" + name
+                    + "', description = '" + description
+                    + "' WHERE idlesson = " + idlessons + ";";
 
             stmt.executeUpdate(query);
 
@@ -529,18 +479,15 @@ public class Users extends JFrame {
         field1.setEditable(false);
         field2.setEditable(true);
         field3.setEditable(true);
-        field4.setEditable(true);
-        field5.setEditable(true);
-        fieldPass.setEditable(true);
 
-        query = "SELECT * FROM users";
+        query = "SELECT * FROM lesson";
         retrieveQuery();
 
     }
 
     protected void disagree() throws SQLException {
 
-        query = "SELECT * FROM users";
+        query = "SELECT * FROM lesson";
 
         b5.setEnabled(true);
         b6.setEnabled(false);
@@ -551,9 +498,6 @@ public class Users extends JFrame {
         field1.setEditable(false);
         field2.setEditable(true);
         field3.setEditable(true);
-        field4.setEditable(true);
-        field5.setEditable(true);
-        fieldPass.setEditable(true);
         retrieveQuery();
 
     }
@@ -587,5 +531,4 @@ public class Users extends JFrame {
         }
 
     }
-
 }
