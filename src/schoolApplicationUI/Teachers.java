@@ -238,7 +238,7 @@ public class Teachers extends Users {
         b8.setEnabled(false);
         b9.setEnabled(false);
         b11.setEnabled(false);
-        field1.setText("");
+        field1.setText("1");
         field2.setText("");
         field3.setText("");
         field4.setText("");
@@ -302,7 +302,7 @@ public class Teachers extends Users {
 
                 JOptionPane.showMessageDialog(null, result);
             } else {
-                JOptionPane.showMessageDialog(null, "There is not a User with this Serial!");
+                JOptionPane.showMessageDialog(null, "There is not a Teacher with this Serial!");
             }
 
         } else {

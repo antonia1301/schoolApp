@@ -38,11 +38,11 @@ public class Lessons extends JFrame {
     private final JLabel label1, label2, label3, labelNum;
     private final JTextField field1, field2, field3;
     private final JButton b1, b2, b3, b4, b5, b6, b7, b8, b9, b11;
-    private Statement stmt;
+    private final Statement stmt;
     private String query, name, description, idText;
-    private Integer count, index, idlessons;
+    private Integer count, index, idlessons,max;
     private ResultSet rs;
-    private GroupLayout layout;
+    private final GroupLayout layout;
     private java.util.List<Integer> list;
 
     public Lessons() throws SQLException {
@@ -401,7 +401,7 @@ public class Lessons extends JFrame {
         b8.setEnabled(false);
         b9.setEnabled(false);
         b11.setEnabled(false);
-        field1.setText("");
+        field1.setText("1");
         field2.setText("");
         field3.setText("");
         field1.setEditable(true);
@@ -421,7 +421,8 @@ public class Lessons extends JFrame {
         description = field3.getText();
 
         if (idlessons > count) {
-            query = "INSERT INTO lesson (idlesson, name, description) VALUES (" + idlessons + ", '" + name
+            maxID();
+            query = "INSERT INTO lesson (idlesson, name, description) VALUES (" + max + ", '" + name
                     + "', '" + description + "');";
 
             stmt.executeUpdate(query);
@@ -455,7 +456,7 @@ public class Lessons extends JFrame {
 
                 JOptionPane.showMessageDialog(null, result);
             } else {
-                JOptionPane.showMessageDialog(null, "There is not a User with this Serial!");
+                JOptionPane.showMessageDialog(null, "There is not a Lesson with this Serial!");
             }
 
         } else {
@@ -530,5 +531,13 @@ public class Lessons extends JFrame {
 
         }
 
+    }
+    protected void maxID() throws SQLException{
+        query = "select MAX(idlesson) from lesson";
+        rs = stmt.executeQuery(query);
+        rs.first();
+        max= rs.getInt("MAX(idlesson)")+1;
+        
+       
     }
 }

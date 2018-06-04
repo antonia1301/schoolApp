@@ -19,6 +19,7 @@ import javax.swing.BorderFactory;
 import javax.swing.GroupLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -37,13 +38,14 @@ public class Prerequisites extends JFrame {
     private final JToolBar toolBar;
     private final JLabel label1, label2, labelNum;
     private final JTextField field1, field2;
-    private final JButton b1, b2, b3, b4, b5, b6, b7, b8, b9, b11;
-    private Statement stmt;
+    private final JButton b1, b2, b3, b4, b5, b6, b7, b9, b11;
+    private final Statement stmt;
     private String query, idText, idText1;
-    private Integer count, index, idlessons;
+    private Integer count, index, idlessons, idNum, idNum1, idlesson, idlesson1;
     private ResultSet rs;
-    private GroupLayout layout;
+    private final GroupLayout layout;
     private java.util.List<Integer> list;
+    private final JComboBox<String> combo1, combo2;
 
     public Prerequisites() throws SQLException {
 
@@ -57,7 +59,6 @@ public class Prerequisites extends JFrame {
         b5 = new JButton(new ImageIcon("resources/add16.png"));
         b6 = new JButton(new ImageIcon("resources/cancel16.png"));
         b7 = new JButton(new ImageIcon("resources/ok16.png"));
-        b8 = new JButton(new ImageIcon("resources/modify16.png"));
         b9 = new JButton(new ImageIcon("resources/delete16.png"));
         b11 = new JButton(new ImageIcon("resources/search16.png"));
         label1 = new JLabel("Required Lesson ID:");
@@ -65,13 +66,13 @@ public class Prerequisites extends JFrame {
         labelNum = new JLabel();
         field1 = new JTextField();
         field2 = new JTextField();
+        combo1 = new JComboBox<>();
+        combo2 = new JComboBox<>();
         stmt = MainDialog.conn.createStatement();
         query = "SELECT * FROM prerequisite";
 
-        
         retrieveQuery();
-        b1.setEnabled(false);
-        b2.setEnabled(false);
+       
         b6.setEnabled(false);
         b7.setEnabled(false);
 
@@ -169,16 +170,7 @@ public class Prerequisites extends JFrame {
             }
 
         });
-        b8.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mousePressed(MouseEvent me) {
-                if (b8.isEnabled()) {
-                    modify();
-                }
 
-            }
-
-        });
         b9.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent me) {
@@ -213,8 +205,6 @@ public class Prerequisites extends JFrame {
         toolBar.add(b6);
         toolBar.addSeparator();
         toolBar.add(b7);
-        toolBar.addSeparator();
-        toolBar.add(b8);
         toolBar.addSeparator();
         toolBar.add(b9);
         toolBar.addSeparator();
@@ -333,12 +323,52 @@ public class Prerequisites extends JFrame {
         b5.setEnabled(false);
         b6.setEnabled(true);
         b7.setEnabled(true);
-        b8.setEnabled(false);
         b9.setEnabled(false);
         b11.setEnabled(false);
-        field1.setText("");
-        field2.setText("");
-        panel.setBorder(BorderFactory.createTitledBorder("Add a Lesson"));
+        panel.setBorder(BorderFactory.createTitledBorder("Add a Prerequisite"));
+
+       
+        changeLayout(0);
+
+        query = "select idlesson from lesson where idlesson not in(select lesson_idlesson from prerequisite\n"
+                + "union \n"
+                + "select lesson_idlesson1 from prerequisite);";
+
+        try {
+            rs = stmt.executeQuery(query);
+            if (!rs.isBeforeFirst()) {
+                combo1.removeAllItems();
+                combo1.addItem("No lesson availiable");
+                b7.setEnabled(false);
+
+            } else {
+
+                while (rs.next()) {
+                    combo1.addItem(String.valueOf(rs.getString("idlesson")));
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Teachers.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        query = "select idlesson from lesson where idlesson not in(select lesson_idlesson1 from prerequisite);";
+
+        try {
+            rs = stmt.executeQuery(query);
+            if (!rs.isBeforeFirst()) {
+                combo2.removeAllItems();
+                combo2.addItem("No lesson availiable");
+                b7.setEnabled(false);
+
+            } else {
+
+                while (rs.next()) {
+                    combo2.addItem(String.valueOf(rs.getString("idlesson")));
+                }
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Teachers.class.getName()).log(Level.SEVERE, null, ex);
+        }
 
         idlessons = count + 1;
 
@@ -352,30 +382,11 @@ public class Prerequisites extends JFrame {
         b5.setEnabled(false);
         b6.setEnabled(true);
         b7.setEnabled(true);
-        b8.setEnabled(false);
         b9.setEnabled(false);
         b11.setEnabled(false);
-        panel.setBorder(BorderFactory.createTitledBorder("Remove this Lesson"));
+        panel.setBorder(BorderFactory.createTitledBorder("Remove this Prerequisite"));
 
         idlessons = 0;
-    }
-
-    protected void modify() {
-
-        b1.setEnabled(false);
-        b2.setEnabled(false);
-        b3.setEnabled(false);
-        b4.setEnabled(false);
-        b5.setEnabled(false);
-        b6.setEnabled(true);
-        b7.setEnabled(true);
-        b8.setEnabled(false);
-        b9.setEnabled(false);
-        b11.setEnabled(false);
-        panel.setBorder(BorderFactory.createTitledBorder("Update this Lesson"));
-
-        idlessons = -5;
-
     }
 
     protected void search() {
@@ -387,11 +398,9 @@ public class Prerequisites extends JFrame {
         b5.setEnabled(false);
         b6.setEnabled(true);
         b7.setEnabled(true);
-        b8.setEnabled(false);
         b9.setEnabled(false);
         b11.setEnabled(false);
-        field1.setText("");
-        field2.setText("");
+        field2.setText("1");
         field1.setEditable(false);
         field2.setEditable(true);
 
@@ -403,22 +412,32 @@ public class Prerequisites extends JFrame {
 
     protected void agree() throws SQLException {
 
-        idText = field1.getText();
-        idText1 = field2.getText();
+        if (combo1.isShowing() && combo2.isShowing()) {
+            idText = String.valueOf(combo1.getSelectedItem());
+            idText1 = String.valueOf(combo2.getSelectedItem());
+            idNum = Integer.valueOf(idText);
+            idNum1 = Integer.valueOf(idText1);
+        }
+        idlesson = Integer.valueOf(field1.getText());
+        idlesson1 = Integer.valueOf(field2.getText());
 
         if (idlessons > count) {
-        //    query = "INSERT INTO lesson (idlesson, name, description) VALUES (" + idlessons + ", '" + name
-        //            + "', '" + description + "');";
+            if (idNum != idNum1) {
 
-            stmt.executeUpdate(query);
+                query = "INSERT INTO prerequisite (lesson_idlesson,lesson_idlesson1 ) VALUES (" + idNum1 + ", " + idNum + ");";
+                stmt.executeUpdate(query);
 
-            JOptionPane.showMessageDialog(null, "Successful Insertion!");
+                JOptionPane.showMessageDialog(null, "Successful Insertion!");
+            } else {
+                JOptionPane.showMessageDialog(null, "Not a valid Option!");
+
+            }
 
         } else if (idlessons == 0) {
-            query = "DELETE FROM lesson WHERE idlesson = " + idText + ";";
+           
+            query = "DELETE FROM prerequisite WHERE lesson_idlesson1 = " + idlesson1 + " ;";
 
             stmt.executeUpdate(query);
-
             JOptionPane.showMessageDialog(null, "Successful Removal!");
 
         } else if (idlessons == -1) {
@@ -429,38 +448,30 @@ public class Prerequisites extends JFrame {
             while (rs.next()) {
                 list.add(rs.getInt("lesson_idlesson1"));
             }
-            if (list.contains(Integer.valueOf(idText1))) {
-                query = "SELECT * FROM prerequisite WHERE lesson_idlesson1 = " + idText1 + ";";
+            if (list.contains(Integer.valueOf(idlesson1))) {
+                query = "SELECT * FROM prerequisite WHERE lesson_idlesson1 = " + idlesson1 + ";";
 
                 rs = stmt.executeQuery(query);
                 rs.first();
 
                 String result = "Required Lesson ID: " + rs.getString("lesson_idlesson") + System.lineSeparator()
-                        + "Requiring Lesson ID: " + idText1 +  "";
+                        + "Requiring Lesson ID: " + idlesson1 + "";
 
                 JOptionPane.showMessageDialog(null, result);
             } else {
-                JOptionPane.showMessageDialog(null, "There is not a User with this Serial!");
+                JOptionPane.showMessageDialog(null, "There is not a Prerequisite with this Serial!");
             }
-
-        } else {
-            idlessons = index;
-//            query = "UPDATE lesson SET  name = '" + name
-       //             + "', description = '" + description
-       //             + "' WHERE idlesson = " + idlessons + ";";
-
-            stmt.executeUpdate(query);
-
-            JOptionPane.showMessageDialog(null, "Successful Update!");
 
         }
 
         b5.setEnabled(true);
         b6.setEnabled(false);
         b7.setEnabled(false);
-        b8.setEnabled(true);
         b9.setEnabled(true);
         b11.setEnabled(true);
+        changeLayout(1);
+        combo1.removeAllItems();
+        combo2.removeAllItems();
         field1.setEditable(true);
         field2.setEditable(true);
 
@@ -476,10 +487,12 @@ public class Prerequisites extends JFrame {
         b5.setEnabled(true);
         b6.setEnabled(false);
         b7.setEnabled(false);
-        b8.setEnabled(true);
         b9.setEnabled(true);
         b11.setEnabled(true);
-        field1.setEditable(false);
+        changeLayout(1);
+        combo1.removeAllItems();
+        combo2.removeAllItems();
+        field1.setEditable(true);
         field2.setEditable(true);
         retrieveQuery();
 
@@ -512,6 +525,60 @@ public class Prerequisites extends JFrame {
             b4.setEnabled(false);
 
         }
+
+    }
+
+    private void changeLayout(Integer a) {
+        if (a == 0) {
+            panel.remove(field2);
+            panel.remove(field1);
+            panel.add(combo1);
+            panel.add(combo2);
+
+            layout.setHorizontalGroup(layout.createSequentialGroup()
+                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                            .addComponent(label1)
+                            .addComponent(label2))
+                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                            .addComponent(combo1)
+                            .addComponent(combo2))
+            );
+            layout.setVerticalGroup(layout.createSequentialGroup()
+                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                            .addComponent(label1)
+                            .addComponent(combo1))
+                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                            .addComponent(label2)
+                            .addComponent(combo2))
+            );
+        } else if (a == 1) {
+            panel.remove(combo1);
+            panel.remove(combo2);
+            panel.add(field2);
+            panel.add(field1);
+
+            layout.setHorizontalGroup(layout.createSequentialGroup()
+                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
+                            .addComponent(label1)
+                            .addComponent(label2)
+                    )
+                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
+                            .addComponent(field1)
+                            .addComponent(field2)
+                    )
+            );
+            layout.setVerticalGroup(layout.createSequentialGroup()
+                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                            .addComponent(label1)
+                            .addComponent(field1))
+                    .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
+                            .addComponent(label2)
+                            .addComponent(field2))
+            );
+        }
+    }
+
+    private void getSerial() throws SQLException {
 
     }
 }
