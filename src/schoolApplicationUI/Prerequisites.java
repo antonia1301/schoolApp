@@ -30,22 +30,23 @@ import javax.swing.JToolBar;
  *
  * @author Flora
  */
-public class Lessons extends JFrame {
+public class Prerequisites extends JFrame {
 
     private final JPanel panel;
     private final JPanel panel2;
     private final JToolBar toolBar;
-    private final JLabel label1, label2, label3, labelNum;
-    private final JTextField field1, field2, field3;
+    private final JLabel label1, label2, labelNum;
+    private final JTextField field1, field2;
     private final JButton b1, b2, b3, b4, b5, b6, b7, b8, b9, b11;
     private Statement stmt;
-    private String query, name, description, idText;
+    private String query, idText, idText1;
     private Integer count, index, idlessons;
     private ResultSet rs;
     private GroupLayout layout;
     private java.util.List<Integer> list;
 
-    public Lessons() throws SQLException {
+    public Prerequisites() throws SQLException {
+
         toolBar = new JToolBar(JToolBar.HORIZONTAL);
         panel = new JPanel();
         panel2 = new JPanel();
@@ -59,17 +60,15 @@ public class Lessons extends JFrame {
         b8 = new JButton(new ImageIcon("resources/modify16.png"));
         b9 = new JButton(new ImageIcon("resources/delete16.png"));
         b11 = new JButton(new ImageIcon("resources/search16.png"));
-        label1 = new JLabel("Lesson ID:");
-        label2 = new JLabel("Lesson Name:");
-        label3 = new JLabel("Lesson Description:");
+        label1 = new JLabel("Required Lesson ID:");
+        label2 = new JLabel("Requiring Lesson ID:");
         labelNum = new JLabel();
         field1 = new JTextField();
         field2 = new JTextField();
-        field3 = new JTextField();
         stmt = MainDialog.conn.createStatement();
-        query = "SELECT * FROM lesson";
+        query = "SELECT * FROM prerequisite";
 
-        field1.setEditable(false);
+        
         retrieveQuery();
         b1.setEnabled(false);
         b2.setEnabled(false);
@@ -231,12 +230,10 @@ public class Lessons extends JFrame {
         layout.setHorizontalGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                         .addComponent(label1)
-                        .addComponent(label2)
-                        .addComponent(label3))
+                        .addComponent(label2))
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.LEADING)
                         .addComponent(field1)
-                        .addComponent(field2)
-                        .addComponent(field3))
+                        .addComponent(field2))
         );
         layout.setVerticalGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
@@ -245,9 +242,6 @@ public class Lessons extends JFrame {
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
                         .addComponent(label2)
                         .addComponent(field2))
-                .addGroup(layout.createParallelGroup(GroupLayout.Alignment.BASELINE)
-                        .addComponent(label3)
-                        .addComponent(field3))
         );
 
         setLayout(new BorderLayout());
@@ -279,9 +273,8 @@ public class Lessons extends JFrame {
 
         rs.first();
 
-        field1.setText(rs.getString("idlesson"));
-        field2.setText(rs.getString("name"));
-        field3.setText(rs.getString("description"));
+        field1.setText(rs.getString("lesson_idlesson"));
+        field2.setText(rs.getString("lesson_idlesson1"));
         index = 1;
 
         count = 1;
@@ -300,9 +293,8 @@ public class Lessons extends JFrame {
 
         rs.next();
 
-        field1.setText(rs.getString("idlesson"));
-        field2.setText(rs.getString("name"));
-        field3.setText(rs.getString("description"));
+        field1.setText(rs.getString("lesson_idlesson"));
+        field2.setText(rs.getString("lesson_idlesson1"));
         index = index + 1;
 
         labelNum.setText(index + "/" + count);
@@ -313,9 +305,8 @@ public class Lessons extends JFrame {
 
         rs.previous();
 
-        field1.setText(rs.getString("idlesson"));
-        field2.setText(rs.getString("name"));
-        field3.setText(rs.getString("description"));
+        field1.setText(rs.getString("lesson_idlesson"));
+        field2.setText(rs.getString("lesson_idlesson1"));
         index = index - 1;
 
         labelNum.setText(index + "/" + count);
@@ -326,9 +317,8 @@ public class Lessons extends JFrame {
 
         rs.last();
 
-        field1.setText(rs.getString("idlesson"));
-        field2.setText(rs.getString("name"));
-        field3.setText(rs.getString("description"));
+        field1.setText(rs.getString("lesson_idlesson"));
+        field2.setText(rs.getString("lesson_idlesson1"));
         index = count;
 
         labelNum.setText(index + "/" + count);
@@ -348,7 +338,6 @@ public class Lessons extends JFrame {
         b11.setEnabled(false);
         field1.setText("");
         field2.setText("");
-        field3.setText("");
         panel.setBorder(BorderFactory.createTitledBorder("Add a Lesson"));
 
         idlessons = count + 1;
@@ -403,12 +392,10 @@ public class Lessons extends JFrame {
         b11.setEnabled(false);
         field1.setText("");
         field2.setText("");
-        field3.setText("");
-        field1.setEditable(true);
-        field2.setEditable(false);
-        field3.setEditable(false);
+        field1.setEditable(false);
+        field2.setEditable(true);
 
-        panel.setBorder(BorderFactory.createTitledBorder("Search a Lesson"));
+        panel.setBorder(BorderFactory.createTitledBorder("Search a Prerequisite"));
 
         idlessons = - 1;
 
@@ -417,12 +404,11 @@ public class Lessons extends JFrame {
     protected void agree() throws SQLException {
 
         idText = field1.getText();
-        name = field2.getText();
-        description = field3.getText();
+        idText1 = field2.getText();
 
         if (idlessons > count) {
-            query = "INSERT INTO lesson (idlesson, name, description) VALUES (" + idlessons + ", '" + name
-                    + "', '" + description + "');";
+        //    query = "INSERT INTO lesson (idlesson, name, description) VALUES (" + idlessons + ", '" + name
+        //            + "', '" + description + "');";
 
             stmt.executeUpdate(query);
 
@@ -438,20 +424,19 @@ public class Lessons extends JFrame {
         } else if (idlessons == -1) {
             list = new ArrayList<>();
 
-            query = "select idlesson from lesson;";
+            query = "select lesson_idlesson1 from prerequisite;";
             rs = stmt.executeQuery(query);
             while (rs.next()) {
-                list.add(rs.getInt("idlesson"));
+                list.add(rs.getInt("lesson_idlesson1"));
             }
-            if (list.contains(Integer.valueOf(idText))) {
-                query = "SELECT * FROM lesson WHERE idlesson = " + idText + ";";
+            if (list.contains(Integer.valueOf(idText1))) {
+                query = "SELECT * FROM prerequisite WHERE lesson_idlesson1 = " + idText1 + ";";
 
                 rs = stmt.executeQuery(query);
                 rs.first();
 
-                String result = "Lesson ID: " + idText + System.lineSeparator()
-                        + "Lesson Name: " + rs.getString("name") + System.lineSeparator()
-                        + "Lesson Description: " + rs.getString("description") + "";
+                String result = "Required Lesson ID: " + rs.getString("lesson_idlesson") + System.lineSeparator()
+                        + "Requiring Lesson ID: " + idText1 +  "";
 
                 JOptionPane.showMessageDialog(null, result);
             } else {
@@ -460,9 +445,9 @@ public class Lessons extends JFrame {
 
         } else {
             idlessons = index;
-            query = "UPDATE lesson SET  name = '" + name
-                    + "', description = '" + description
-                    + "' WHERE idlesson = " + idlessons + ";";
+//            query = "UPDATE lesson SET  name = '" + name
+       //             + "', description = '" + description
+       //             + "' WHERE idlesson = " + idlessons + ";";
 
             stmt.executeUpdate(query);
 
@@ -476,18 +461,17 @@ public class Lessons extends JFrame {
         b8.setEnabled(true);
         b9.setEnabled(true);
         b11.setEnabled(true);
-        field1.setEditable(false);
+        field1.setEditable(true);
         field2.setEditable(true);
-        field3.setEditable(true);
 
-        query = "SELECT * FROM lesson";
+        query = "SELECT * FROM prerequisite";
         retrieveQuery();
 
     }
 
     protected void disagree() throws SQLException {
 
-        query = "SELECT * FROM lesson";
+        query = "SELECT * FROM prerequisite";
 
         b5.setEnabled(true);
         b6.setEnabled(false);
@@ -497,7 +481,6 @@ public class Lessons extends JFrame {
         b11.setEnabled(true);
         field1.setEditable(false);
         field2.setEditable(true);
-        field3.setEditable(true);
         retrieveQuery();
 
     }

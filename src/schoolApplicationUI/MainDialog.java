@@ -127,6 +127,18 @@ public class MainDialog extends JFrame {
             }
 
         });
+        prerequisitesAction.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent me) {
+                try {
+                    Prerequisites prerequisites = new Prerequisites();
+                } catch (SQLException ex) {
+                    Logger.getLogger(MainDialog.class.getName()).log(Level.SEVERE, null, ex);
+                }
+
+            }
+
+        });
         printMenu.addMouseListener(new MouseAdapter() {
             @Override
             public void mousePressed(MouseEvent me) {
