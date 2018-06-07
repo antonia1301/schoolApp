@@ -9,17 +9,17 @@ import schoolApplicationUI.MainDialog;
 
 /**
  *
- * @author Flora
+ * @author Antonia
  */
 public class Main {
 
     /**
-     * @param args the command line arguments
+     * @param args the main class,instatiates the MainDialog
      */
    public static void main(String[] args) {
        
-        
-        MainDialog frame = new MainDialog();
+        //kaloume ton constructora tin klassis MainDialog, k dimiourgoume ena instance tis
+        MainDialog mainDialog = new MainDialog();
                 
        
         

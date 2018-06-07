@@ -17,14 +17,19 @@ import javax.swing.JOptionPane;
 
 /**
  *
- * @author Flora
+ * @author Antonia
  */
 public class Students extends Users {
 
     private String am, eksamino;
     private final JComboBox<String> comboBox;
     private java.util.List<Integer> list;
+    private String[] splitString;
 
+    /**
+     *
+     * @throws SQLException
+     */
     public Students() throws SQLException {
 
         panel.setBorder(BorderFactory.createTitledBorder("Students"));
@@ -138,6 +143,7 @@ public class Students extends Users {
 
     @Override
     protected void add() {
+        comboBox.removeAllItems();
         b1.setEnabled(false);
         b2.setEnabled(false);
         b3.setEnabled(false);
@@ -201,6 +207,25 @@ public class Students extends Users {
         b9.setEnabled(false);
         b11.setEnabled(false);
         panel.setBorder(BorderFactory.createTitledBorder("Remove this Student"));
+        int idEnrollent = Integer.valueOf(field1.getText());
+        //tsekaro poioi mathites exoun graftei se mathimata gt den mporo na tous diagrapso
+        list = new ArrayList<>();
+
+        query = "SELECT idstudent FROM schooldb.student left join schooldb.enrollment on idstudent = student_idstudent where idstudent=student_idstudent;";
+        try {
+            rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                list.add(rs.getInt("idstudent"));
+                
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Students.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (list.contains(Integer.valueOf(idEnrollent))) {
+            b7.setEnabled(false);
+            
+        }
 
         idusers = 0;
 
@@ -270,7 +295,6 @@ public class Students extends Users {
             stmt.executeUpdate(query);
 
             JOptionPane.showMessageDialog(null, "Successful Insertion!");
-            changeLayout(1);
 
         } else if (idusers == 0) {
 
@@ -282,14 +306,14 @@ public class Students extends Users {
         } else if (idusers == -1) {
 
             list = new ArrayList<>();
-              
+
             query = "select idstudent from student;";
             rs = stmt.executeQuery(query);
             while (rs.next()) {
                 list.add(rs.getInt("idstudent"));
             }
 
-            if (list.contains(Integer.valueOf(idText)) ) {
+            if (list.contains(Integer.valueOf(idText))) {
                 query = "SELECT * FROM student left JOIN users ON users.idusers = student.idstudent WHERE idstudent = " + idText + ";";
 
                 rs = stmt.executeQuery(query);
@@ -316,6 +340,8 @@ public class Students extends Users {
 
         }
 
+        changeLayout(1);
+
         b5.setEnabled(true);
         b6.setEnabled(false);
         b7.setEnabled(false);
@@ -333,8 +359,7 @@ public class Students extends Users {
 
     @Override
     protected void disagree() throws SQLException {
-
-        query = "SELECT * FROM users left JOIN student ON users.idusers = student.idstudent WHERE student.idstudent IS NOT NULL;";
+        changeLayout(1);
 
         b5.setEnabled(true);
         b6.setEnabled(false);
@@ -346,14 +371,13 @@ public class Students extends Users {
         field2.setEditable(true);
         field3.setEditable(true);
         field4.setEditable(true);
-        field5.setEditable(true);
-        fieldPass.setEditable(true);
-        changeLayout(1);
-        comboBox.removeAllItems();
+        query = "SELECT * FROM users left JOIN student ON users.idusers = student.idstudent WHERE student.idstudent IS NOT NULL;";
         retrieveQuery();
-
     }
 
+    /**
+     *
+     */
     private void changeLayout(Integer a) {
         if (a == 0) {
             panel.remove(field2);
@@ -422,20 +446,27 @@ public class Students extends Users {
         }
     }
 
+    /**
+     *
+     */
     private void getSerial() throws SQLException {
+
+        query = "SELECT * FROM users left join student on idusers=idstudent WHERE idstudent is NULL and idusers NOT IN (SELECT idteacher from teacher);";
+        rs = stmt.executeQuery(query);
 
         if (rs.isBeforeFirst()) {
             String s = (String) comboBox.getSelectedItem();
+            if (s != null) {
 
-            String[] l;
-            l = s.split(", ");
+                splitString = s.split(", ");
 
-            s = l[0];
-            query = "SELECT * FROM users WHERE lastname = '" + s + "';";
-            rs = stmt.executeQuery(query);
-            rs.first();
-            field1.setText(rs.getString("idusers"));
+                s = splitString[0];
+                query = "SELECT idusers FROM users WHERE lastname = '" + s + "';";
+                rs = stmt.executeQuery(query);
+                rs.first();
+                field1.setText(rs.getString("idusers"));
 
+            }
         }
     }
 

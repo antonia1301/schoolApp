@@ -29,9 +29,9 @@ import javax.swing.JToolBar;
 
 /**
  *
- * @author Flora
+ * @author Antonia
  */
-public class Prerequisites extends JFrame {
+public final class Prerequisites extends JFrame {
 
     private final JPanel panel;
     private final JPanel panel2;
@@ -47,6 +47,10 @@ public class Prerequisites extends JFrame {
     private java.util.List<Integer> list;
     private final JComboBox<String> combo1, combo2;
 
+    /**
+     *
+     * @throws SQLException
+     */
     public Prerequisites() throws SQLException {
 
         toolBar = new JToolBar(JToolBar.HORIZONTAL);
@@ -212,7 +216,7 @@ public class Prerequisites extends JFrame {
 
         panel2.add(labelNum);
 
-        panel.setBorder(BorderFactory.createTitledBorder("Users"));
+        panel.setBorder(BorderFactory.createTitledBorder("Prerequisites"));
         layout = new GroupLayout(panel);
         panel.setLayout(layout);
         layout.setAutoCreateGaps(true);
@@ -245,7 +249,11 @@ public class Prerequisites extends JFrame {
         setVisible(true);
     }
 
-    protected void retrieveQuery() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void retrieveQuery() throws SQLException {
 
         try {
 
@@ -259,7 +267,11 @@ public class Prerequisites extends JFrame {
 
     }
 
-    protected void first() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void first() throws SQLException {
 
         rs.first();
 
@@ -279,7 +291,11 @@ public class Prerequisites extends JFrame {
         checkEnabled();
     }
 
-    protected void next() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void next() throws SQLException {
 
         rs.next();
 
@@ -291,7 +307,11 @@ public class Prerequisites extends JFrame {
         checkEnabled();
     }
 
-    protected void previous() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void previous() throws SQLException {
 
         rs.previous();
 
@@ -303,7 +323,11 @@ public class Prerequisites extends JFrame {
         checkEnabled();
     }
 
-    protected void last() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void last() throws SQLException {
 
         rs.last();
 
@@ -315,7 +339,10 @@ public class Prerequisites extends JFrame {
         checkEnabled();
     }
 
-    protected void add() {
+    /**
+     *
+     */
+    private void add() {
         b1.setEnabled(false);
         b2.setEnabled(false);
         b3.setEnabled(false);
@@ -325,6 +352,8 @@ public class Prerequisites extends JFrame {
         b7.setEnabled(true);
         b9.setEnabled(false);
         b11.setEnabled(false);
+        label1.setText("Requiring Lesson ID");
+        label2.setText("Required Lesson ID");
         panel.setBorder(BorderFactory.createTitledBorder("Add a Prerequisite"));
 
        
@@ -374,7 +403,10 @@ public class Prerequisites extends JFrame {
 
     }
 
-    protected void remove() {
+    /**
+     *
+     */
+    private void remove() {
         b1.setEnabled(false);
         b2.setEnabled(false);
         b3.setEnabled(false);
@@ -389,7 +421,10 @@ public class Prerequisites extends JFrame {
         idlessons = 0;
     }
 
-    protected void search() {
+    /**
+     *
+     */
+    private void search() {
 
         b1.setEnabled(false);
         b2.setEnabled(false);
@@ -410,8 +445,12 @@ public class Prerequisites extends JFrame {
 
     }
 
-    protected void agree() throws SQLException {
-
+    /**
+     *
+     * @throws SQLException
+     */
+    private void agree() throws SQLException {
+        //otan fenotnai ta cobobox na mpouron na parthoun autes oi times allios o deiktis deixnei se null gt den ufistantai auta ta components
         if (combo1.isShowing() && combo2.isShowing()) {
             idText = String.valueOf(combo1.getSelectedItem());
             idText1 = String.valueOf(combo2.getSelectedItem());
@@ -480,7 +519,11 @@ public class Prerequisites extends JFrame {
 
     }
 
-    protected void disagree() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void disagree() throws SQLException {
 
         query = "SELECT * FROM prerequisite";
 
@@ -498,7 +541,10 @@ public class Prerequisites extends JFrame {
 
     }
 
-    protected void checkEnabled() {
+    /**
+     *
+     */
+    private void checkEnabled() {
         b6.setEnabled(false);
         b7.setEnabled(false);
         if (index == 0 || index == 1 && count == 1) {
@@ -578,7 +624,5 @@ public class Prerequisites extends JFrame {
         }
     }
 
-    private void getSerial() throws SQLException {
 
-    }
 }

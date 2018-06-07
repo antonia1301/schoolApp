@@ -28,9 +28,9 @@ import javax.swing.JToolBar;
 
 /**
  *
- * @author Flora
+ * @author Antonia
  */
-public class Lessons extends JFrame {
+public final class Lessons extends JFrame {
 
     private final JPanel panel;
     private final JPanel panel2;
@@ -40,11 +40,15 @@ public class Lessons extends JFrame {
     private final JButton b1, b2, b3, b4, b5, b6, b7, b8, b9, b11;
     private final Statement stmt;
     private String query, name, description, idText;
-    private Integer count, index, idlessons,max;
+    private Integer count, index, idlessons, max;
     private ResultSet rs;
     private final GroupLayout layout;
     private java.util.List<Integer> list;
 
+    /**
+     *
+     * @throws SQLException
+     */
     public Lessons() throws SQLException {
         toolBar = new JToolBar(JToolBar.HORIZONTAL);
         panel = new JPanel();
@@ -223,7 +227,7 @@ public class Lessons extends JFrame {
 
         panel2.add(labelNum);
 
-        panel.setBorder(BorderFactory.createTitledBorder("Users"));
+        panel.setBorder(BorderFactory.createTitledBorder("Lessons"));
         layout = new GroupLayout(panel);
         panel.setLayout(layout);
         layout.setAutoCreateGaps(true);
@@ -261,7 +265,11 @@ public class Lessons extends JFrame {
         setVisible(true);
     }
 
-    protected void retrieveQuery() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void retrieveQuery() throws SQLException {
 
         try {
 
@@ -275,7 +283,11 @@ public class Lessons extends JFrame {
 
     }
 
-    protected void first() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void first() throws SQLException {
 
         rs.first();
 
@@ -296,7 +308,11 @@ public class Lessons extends JFrame {
         checkEnabled();
     }
 
-    protected void next() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void next() throws SQLException {
 
         rs.next();
 
@@ -309,7 +325,11 @@ public class Lessons extends JFrame {
         checkEnabled();
     }
 
-    protected void previous() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void previous() throws SQLException {
 
         rs.previous();
 
@@ -322,7 +342,11 @@ public class Lessons extends JFrame {
         checkEnabled();
     }
 
-    protected void last() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void last() throws SQLException {
 
         rs.last();
 
@@ -335,7 +359,10 @@ public class Lessons extends JFrame {
         checkEnabled();
     }
 
-    protected void add() {
+    /**
+     *
+     */
+    private void add() {
         b1.setEnabled(false);
         b2.setEnabled(false);
         b3.setEnabled(false);
@@ -355,7 +382,10 @@ public class Lessons extends JFrame {
 
     }
 
-    protected void remove() {
+    /**
+     *
+     */
+    private void remove() {
         b1.setEnabled(false);
         b2.setEnabled(false);
         b3.setEnabled(false);
@@ -366,12 +396,43 @@ public class Lessons extends JFrame {
         b8.setEnabled(false);
         b9.setEnabled(false);
         b11.setEnabled(false);
+        int idpre = Integer.valueOf(field1.getText());
+
         panel.setBorder(BorderFactory.createTitledBorder("Remove this Lesson"));
 
         idlessons = 0;
+        // pernoume to text apo to proto field diladi to id, an auto einai iso me 1,2,3,4 apogaoreuoume na ginei agree,diladi diagrafi gt
+        //ta mathimata autoi einai autoi p itan eksarxis stin vasi sto teachers, kai i idia i vasi exei graftei etsi oste na apagoreuete i diagrafi tous
+        int a = Integer.valueOf(field1.getText());
+        if (a == 1 || a == 2 || a == 3 || a == 4) {
+            b7.setEnabled(false);
+        }
+        //episis an kapoio lesson einai sta prerequsuite den ginete na diagraftei
+        list = new ArrayList<>();
+
+        query = "SELECT idlesson FROM schooldb.lesson left join schooldb.prerequisite on idlesson = lesson_idlesson where idlesson = lesson_idlesson\n"
+                + "union\n"
+                + "SELECT idlesson FROM schooldb.lesson left join schooldb.prerequisite on idlesson = lesson_idlesson1 where idlesson = lesson_idlesson1;";
+        try {
+            rs = stmt.executeQuery(query);
+            while (rs.next()) {
+                list.add(rs.getInt("idlesson"));
+
+            }
+        } catch (SQLException ex) {
+            Logger.getLogger(Students.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        if (list.contains(idpre)) {
+            b7.setEnabled(false);
+
+        }
     }
 
-    protected void modify() {
+    /**
+     *
+     */
+    private void modify() {
 
         b1.setEnabled(false);
         b2.setEnabled(false);
@@ -389,7 +450,10 @@ public class Lessons extends JFrame {
 
     }
 
-    protected void search() {
+    /**
+     *
+     */
+    private void search() {
 
         b1.setEnabled(false);
         b2.setEnabled(false);
@@ -414,7 +478,11 @@ public class Lessons extends JFrame {
 
     }
 
-    protected void agree() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void agree() throws SQLException {
 
         idText = field1.getText();
         name = field2.getText();
@@ -460,7 +528,7 @@ public class Lessons extends JFrame {
             }
 
         } else {
-            idlessons = index;
+            idlessons = Integer.valueOf(idText);
             query = "UPDATE lesson SET  name = '" + name
                     + "', description = '" + description
                     + "' WHERE idlesson = " + idlessons + ";";
@@ -486,7 +554,11 @@ public class Lessons extends JFrame {
 
     }
 
-    protected void disagree() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void disagree() throws SQLException {
 
         query = "SELECT * FROM lesson";
 
@@ -503,7 +575,10 @@ public class Lessons extends JFrame {
 
     }
 
-    protected void checkEnabled() {
+    /**
+     *
+     */
+    private void checkEnabled() {
         b6.setEnabled(false);
         b7.setEnabled(false);
         if (index == 0 || index == 1 && count == 1) {
@@ -532,12 +607,16 @@ public class Lessons extends JFrame {
         }
 
     }
-    protected void maxID() throws SQLException{
+
+    /**
+     *
+     * @throws SQLException
+     */
+    private void maxID() throws SQLException {
         query = "select MAX(idlesson) from lesson";
         rs = stmt.executeQuery(query);
         rs.first();
-        max= rs.getInt("MAX(idlesson)")+1;
-        
-       
+        max = rs.getInt("MAX(idlesson)") + 1;
+
     }
 }

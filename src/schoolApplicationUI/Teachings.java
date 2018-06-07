@@ -24,9 +24,9 @@ import javax.swing.JToolBar;
 
 /**
  *
- * @author Flora
+ * @author Antonia
  */
-public class Teachings extends JFrame {
+public final class Teachings extends JFrame {
 
     private final JPanel panel;
     private final JPanel panel2;
@@ -36,12 +36,16 @@ public class Teachings extends JFrame {
     private final JButton b1, b2, b3, b4, b5, b6, b7, b8, b9, b11;
     private final Statement stmt;
     private String query, idText, idText1;
-    private Integer count, index, idlessons, idNum, idNum1, idteacher, idlesson, idteaches, max;
+    private Integer count, index, idteaching, idNum, idNum1, idteacher, idlesson, idteaches, max;
     private ResultSet rs;
     private final GroupLayout layout;
     private java.util.List<Integer> list;
     private final JComboBox<String> combo1, combo2;
 
+    /**
+     *
+     * @throws SQLException
+     */
     public Teachings() throws SQLException {
 
         toolBar = new JToolBar(JToolBar.HORIZONTAL);
@@ -68,9 +72,14 @@ public class Teachings extends JFrame {
         combo2 = new JComboBox<>();
         stmt = MainDialog.conn.createStatement();
         query = "SELECT * FROM teaches";
-
+        count = 0;
+       
+        //epeidi stin vasi den ipirxan idi teaching stin arxi apenergopoioume ta 4 prota koumpia
+        b1.setEnabled(false);
+        b2.setEnabled(false);
+        b3.setEnabled(false);
+        b4.setEnabled(false);
         retrieveQuery();
-
         b6.setEnabled(false);
         b7.setEnabled(false);
         b8.setEnabled(true);
@@ -262,7 +271,11 @@ public class Teachings extends JFrame {
         setVisible(true);
     }
 
-    protected void retrieveQuery() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void retrieveQuery() throws SQLException {
 
         try {
 
@@ -276,7 +289,11 @@ public class Teachings extends JFrame {
 
     }
 
-    protected void first() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void first() throws SQLException {
 
         rs.first();
 
@@ -298,7 +315,11 @@ public class Teachings extends JFrame {
         checkEnabled();
     }
 
-    protected void next() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void next() throws SQLException {
 
         rs.next();
 
@@ -311,7 +332,11 @@ public class Teachings extends JFrame {
         checkEnabled();
     }
 
-    protected void previous() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void previous() throws SQLException {
 
         rs.previous();
 
@@ -324,7 +349,11 @@ public class Teachings extends JFrame {
         checkEnabled();
     }
 
-    protected void last() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void last() throws SQLException {
 
         rs.last();
 
@@ -337,7 +366,11 @@ public class Teachings extends JFrame {
         checkEnabled();
     }
 
-    protected void add() {
+    /**
+     *
+     */
+    private void add() {
+        field1.setText("0");
         b1.setEnabled(false);
         b2.setEnabled(false);
         b3.setEnabled(false);
@@ -352,7 +385,7 @@ public class Teachings extends JFrame {
         field1.setEditable(false);
 
         changeLayout(0);
-
+        //sto proto combobox vazo olous tous kathigtes(efoson enas kathigitis ipothrtoume mporei na didaskei pano apo ena mathima)
         query = "select idteacher from teacher;";
 
         try {
@@ -366,6 +399,7 @@ public class Teachings extends JFrame {
             Logger.getLogger(Teachers.class.getName()).log(Level.SEVERE, null, ex);
         }
 
+        //sto deutero combobox vazoume ta mathimata pou den didaskontai akoma apo kapoion kathigiti, an auto einai adeio vgazei oti den iparxoun mathimata
         query = "select idlesson from lesson where idlesson not in(select lesson_idlesson from teaches);";
 
         try {
@@ -385,11 +419,14 @@ public class Teachings extends JFrame {
             Logger.getLogger(Teachers.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        idlessons = count + 1;
+        idteaching = count + 1;
 
     }
 
-    protected void modify() {
+    /**
+     *
+     */
+    private void modify() {
 
         b1.setEnabled(false);
         b2.setEnabled(false);
@@ -405,7 +442,7 @@ public class Teachings extends JFrame {
         field1.setEditable(false);
         field3.setEditable(false);
         changeLayout(2);
-
+        //sto modify allazoume ton kathigiti enos mathimatos gt na to llazame olo den exei noima
         query = "select idteacher from teacher;";
 
         try {
@@ -419,11 +456,14 @@ public class Teachings extends JFrame {
             Logger.getLogger(Teachers.class.getName()).log(Level.SEVERE, null, ex);
         }
 
-        idlessons = -5;
+        idteaching = -5;
 
     }
 
-    protected void remove() {
+    /**
+     *
+     */
+    private void remove() {
         b1.setEnabled(false);
         b2.setEnabled(false);
         b3.setEnabled(false);
@@ -437,10 +477,13 @@ public class Teachings extends JFrame {
         panel.setBorder(BorderFactory.createTitledBorder("Remove this Teaching"));
         field1.setEditable(false);
 
-        idlessons = 0;
+        idteaching = 0;
     }
 
-    protected void search() {
+    /**
+     *
+     */
+    private void search() {
 
         b1.setEnabled(false);
         b2.setEnabled(false);
@@ -459,13 +502,19 @@ public class Teachings extends JFrame {
         field2.setEditable(false);
 
         panel.setBorder(BorderFactory.createTitledBorder("Search a Teaching"));
-
-        idlessons = - 1;
+        //kano search me vasi to id teaches
+        idteaching = - 1;
 
     }
 
-    protected void agree() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void agree() throws SQLException {
 
+        idteaches = Integer.valueOf(field1.getText());
+        //ta fields exoume valei na pernoun times analoga pio component einai emfanes
         if (combo1.isShowing()) {
             idText = String.valueOf(combo1.getSelectedItem());
             idNum = Integer.valueOf(idText);
@@ -475,27 +524,24 @@ public class Teachings extends JFrame {
             idText1 = String.valueOf(combo2.getSelectedItem());
             idNum1 = Integer.valueOf(idText1);
         }
-        idteaches = Integer.valueOf(field1.getText());
-        if (field2.isEditable() && field3.isEditable()) {
-            idteacher = Integer.valueOf(field2.getText());
-            idlesson = Integer.valueOf(field3.getText());
-        }
 
-        if (idlessons > count) {
+        
+
+        if (idteaching > count) {
             maxID();
             query = "INSERT INTO teaches (idteaches, lesson_idlesson,teacher_idteacher ) VALUES (" + max + ", " + idNum1 + ", " + idNum + ");";
             stmt.executeUpdate(query);
 
             JOptionPane.showMessageDialog(null, "Successful Insertion!");
 
-        } else if (idlessons == 0) {
+        } else if (idteaching == 0) {
 
             query = "DELETE FROM teaches WHERE idteaches = " + idteaches + " ;";
 
             stmt.executeUpdate(query);
             JOptionPane.showMessageDialog(null, "Successful Removal!");
 
-        } else if (idlessons == -1) {
+        } else if (idteaching == -1) {
             list = new ArrayList<>();
 
             query = "select idteaches from teaches;";
@@ -519,7 +565,7 @@ public class Teachings extends JFrame {
             }
 
         } else {
-            idlessons = index;
+            idteaching = index;
             query = "UPDATE teaches SET  teacher_idteacher = " + idNum1
                     + " WHERE idteaches = " + idteaches + ";";
 
@@ -546,7 +592,11 @@ public class Teachings extends JFrame {
 
     }
 
-    protected void disagree() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void disagree() throws SQLException {
 
         query = "SELECT * FROM teaches";
 
@@ -566,7 +616,10 @@ public class Teachings extends JFrame {
 
     }
 
-    protected void checkEnabled() {
+    /**
+     *
+     */
+    private void checkEnabled() {
         b6.setEnabled(false);
         b7.setEnabled(false);
         if (index == 0 || index == 1 && count == 1) {
@@ -596,6 +649,9 @@ public class Teachings extends JFrame {
 
     }
 
+    /**
+     *
+     */
     private void changeLayout(Integer a) {
         if (null != a) {
             switch (a) {
@@ -656,6 +712,7 @@ public class Teachings extends JFrame {
                                     .addComponent(field3))
                     );
                     break;
+                    // se auti tin periptosi exoume ena field kai ena combo
                 case 2:
                     panel.remove(field2);
                     panel.add(combo2);
@@ -689,7 +746,11 @@ public class Teachings extends JFrame {
         }
     }
 
-    protected void maxID() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void maxID() throws SQLException {
         query = "select MAX(idteaches) from teaches";
         rs = stmt.executeQuery(query);
         rs.first();

@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 package schoolApplicationUI;
-
+//imports
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -29,7 +29,7 @@ import javax.swing.JToolBar;
 
 /**
  *
- * @author Flora
+ * @author Antonia
  */
 public class Enrollments extends JFrame {
 
@@ -47,6 +47,10 @@ public class Enrollments extends JFrame {
     private java.util.List<Integer> list;
     private final JComboBox<String> combo1, combo2;
 
+    /**
+     *
+     * @throws SQLException
+     */
     public Enrollments() throws SQLException {
 
         toolBar = new JToolBar(JToolBar.HORIZONTAL);
@@ -76,9 +80,14 @@ public class Enrollments extends JFrame {
         combo1 = new JComboBox<>();
         combo2 = new JComboBox<>();
         stmt = MainDialog.conn.createStatement();
+        count=0;
         query = "SELECT * FROM enrollment";
 
         field1.setEditable(false);
+        b1.setEnabled(false);
+        b2.setEnabled(false);
+        b3.setEnabled(false);
+        b4.setEnabled(false);
         retrieveQuery();
         b6.setEnabled(false);
         b7.setEnabled(false);
@@ -207,7 +216,7 @@ public class Enrollments extends JFrame {
             }
 
         });
-
+        //ftiaxnoume to toolbar
         toolBar.add(b1);
         toolBar.addSeparator();
         toolBar.add(b2);
@@ -236,6 +245,7 @@ public class Enrollments extends JFrame {
         layout.setAutoCreateGaps(true);
         layout.setAutoCreateContainerGaps(true);
         layout.setHorizontalGroup(layout.createSequentialGroup()
+                //ftiaxnoume ta orizontia group
                 .addGroup(layout.createParallelGroup(GroupLayout.Alignment.TRAILING)
                         .addComponent(label1)
                         .addComponent(label2)
@@ -278,7 +288,11 @@ public class Enrollments extends JFrame {
         setVisible(true);
     }
 
-    protected void retrieveQuery() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void retrieveQuery() throws SQLException {
 
         try {
 
@@ -292,7 +306,11 @@ public class Enrollments extends JFrame {
 
     }
 
-    protected void first() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void first() throws SQLException {
 
         rs.first();
 
@@ -315,7 +333,11 @@ public class Enrollments extends JFrame {
         checkEnabled();
     }
 
-    protected void next() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void next() throws SQLException {
 
         rs.next();
 
@@ -330,7 +352,11 @@ public class Enrollments extends JFrame {
         checkEnabled();
     }
 
-    protected void previous() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void previous() throws SQLException {
 
         rs.previous();
 
@@ -345,7 +371,11 @@ public class Enrollments extends JFrame {
         checkEnabled();
     }
 
-    protected void last() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void last() throws SQLException {
 
         rs.last();
 
@@ -360,7 +390,10 @@ public class Enrollments extends JFrame {
         checkEnabled();
     }
 
-    protected void add() {
+    /**
+     *
+     */
+    private void add() {
         b1.setEnabled(false);
         b2.setEnabled(false);
         b3.setEnabled(false);
@@ -378,7 +411,7 @@ public class Enrollments extends JFrame {
         field5.setText("fail");
         panel.setBorder(BorderFactory.createTitledBorder("Add an Enrollment"));
         changeLayout(0);
-
+        //dialegoume mathimata
         query = "select idlesson from lesson;";
 
         try {
@@ -391,7 +424,7 @@ public class Enrollments extends JFrame {
         } catch (SQLException ex) {
             Logger.getLogger(Teachers.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        //dialegoume tous mathites
         query = "select idstudent from student;";
 
         try {
@@ -415,7 +448,10 @@ public class Enrollments extends JFrame {
 
     }
 
-    protected void remove() {
+    /**
+     *
+     */
+    private void remove() {
         b1.setEnabled(false);
         b2.setEnabled(false);
         b3.setEnabled(false);
@@ -431,7 +467,10 @@ public class Enrollments extends JFrame {
         idenroll = 0;
     }
 
-    protected void modify() {
+    /**
+     *
+     */
+    private void modify() {
 
         b1.setEnabled(false);
         b2.setEnabled(false);
@@ -450,7 +489,10 @@ public class Enrollments extends JFrame {
 
     }
 
-    protected void search() {
+    /**
+     *
+     */
+    private void search() {
 
         b1.setEnabled(false);
         b2.setEnabled(false);
@@ -479,7 +521,11 @@ public class Enrollments extends JFrame {
 
     }
 
-    protected void agree() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void agree() throws SQLException {
 
         idenrollment = field1.getText();
         lessonid = field2.getText();
@@ -498,14 +544,15 @@ public class Enrollments extends JFrame {
         if (idenroll > count) {
 
             //an den to exei parei o foititis idi
+            //vriskoume to id to id ton foititon p xei parei to mathima (an iparxei)
             query = "select student_idstudent from enrollment where lesson_idlesson = " + lessonid + ";";
             rs = stmt.executeQuery(query);
             list = new ArrayList<>();
-
+            //ta vazoume se mia lista
             while (rs.next()) {
                 list.add(rs.getInt("student_idstudent"));
             }
-
+            // an auti i lista den exei mesa to id tou foititi p thelei na parei t mathima
             if (!list.contains(Integer.valueOf(studentid))) {
 
                 //an to lesson den exei prerequisite
@@ -520,12 +567,13 @@ public class Enrollments extends JFrame {
                     stmt.executeUpdate(query);
 
                     JOptionPane.showMessageDialog(null, "Successful Insertion!");
-                } else {
+                } //an exei omos prerequisite
+                else {
                     //vriskoume poio mathima einai prereq
                     rs.first();
                     int prereq = rs.getInt("lesson_idlesson");
 
-                    //vriskoume ton vathmo foititi sto mathima rerq an iparxei
+                    //vriskoume ton vathmo foititi sto mathima prereq an iparxei
                     query = "select grade from enrollment where lesson_idlesson=" + prereq + " and student_idstudent= " + studentid + ";";
                     //exei vathmo?
                     rs = stmt.executeQuery(query);
@@ -536,25 +584,28 @@ public class Enrollments extends JFrame {
                     } else {
                         //an exei vathmo
                         rs.first();
-                        int grade = rs.getInt("grade");
+                        int grade1 = rs.getInt("grade");
 
                         //an einai megaliteros tou 5 diladi to exei perasei
-                        if (grade >= 5) {
+                        if (grade1 >= 5) {
+                            // ara dilonei to mathima kanonika
                             query = "INSERT INTO enrollment (idenrollment, lesson_idlesson, student_idstudent, grade, status) VALUES (" + idenroll + ", " + lessonid
                                     + ", " + studentid + ", " + grade + ", '" + status + "' );";
 
                             stmt.executeUpdate(query);
 
                             JOptionPane.showMessageDialog(null, "Successful Insertion!");
-                        } else {
-                            JOptionPane.showMessageDialog(null, "This Student has passed( grade: " + grade + " ) the required lesson " + prereq + " "
+                        } //an exei parei kato apo 5
+                        else {
+                            // enimeronoume oti den exei perasei to aparaitito mathima
+                            JOptionPane.showMessageDialog(null, "This Student has not passed( grade: " + grade + " ) the required lesson " + prereq + " "
                                     + "for lesson " + lessonid + "!");
                         }
                     }
 
                 }
 
-            } //an to exei parei
+            } //an i lista exei to id tou foititi, simainei to exei parei ara eidopoioume oti den ginete na to ksanaparei
             else {
                 JOptionPane.showMessageDialog(null, "Student has already enrolled to this lesson!");
             }
@@ -621,7 +672,11 @@ public class Enrollments extends JFrame {
 
     }
 
-    protected void disagree() throws SQLException {
+    /**
+     *
+     * @throws SQLException
+     */
+    private void disagree() throws SQLException {
 
         query = "SELECT * FROM enrollment";
 
@@ -643,7 +698,10 @@ public class Enrollments extends JFrame {
 
     }
 
-    protected void checkEnabled() {
+    /**
+     *
+     */
+    private void checkEnabled() {
         b6.setEnabled(false);
         b7.setEnabled(false);
         if (index == 0 || index == 1 && count == 1) {
